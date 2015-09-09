@@ -19,7 +19,9 @@ libraryDependencies ++= Seq(
   // Database dependencies
   "org.postgresql"	%  "postgresql"		% "9.4-1202-jdbc42",
   "com.typesafe.slick"	%% "slick"		% "3.0.2",
-  "org.slf4j"		%  "slf4j-nop"		% "1.6.4"
+  "org.slf4j"		%  "slf4j-nop"		% "1.6.4",
+
+  "org.flywaydb" %% "flyway-play" % "2.2.0"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
