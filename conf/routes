@@ -4,6 +4,9 @@
 
 # Home page
 GET     /                           controllers.Application.index
+
+
+GET 	/api/stickies				controllers.Sticky.getAllStickies
 # GET	/users						controllers.Application.getUsers
 # POST	/users						controllers.Application.createUser
 
