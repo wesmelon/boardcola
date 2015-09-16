@@ -1,17 +1,18 @@
 package models
 
-import java.sql._
+import java.util.UUID
+import java.sql.Timestamp
 import java.util.Calendar
 
 import scala.concurrent.Future
 import slick.driver.H2Driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-case class Board(id: Option[Long], cid: Long, name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
+case class Board(id: Option[UUID], cid: UUID, name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
 
 class Boards(tag: Tag) extends Table[Board](tag, "boards") {
-	def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-	def cid = column[Long]("category_id")
+	def id = column[UUID]("id", O.PrimaryKey, O.AutoInc)
+	def cid = column[UUID]("category_id")
 	def name = column[String]("name")
 	def creationTime = column[Timestamp]("creation_time")
 	def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
@@ -41,31 +42,31 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
  		result
  	}
 
- 	def findById(id: Long) : Future[Board] = {
+ 	def findById(id: UUID) : Future[Board] = {
  		val query = boards.filter(_.id === id)
 
  		val result : Future[Board] = Global.db.run(query.result.head)
  		result
  	}
 
- 	def findByCid(cid: Long) : Future[Seq[Board]] = {
+ 	def findByCid(cid: UUID) : Future[Seq[Board]] = {
  		val query = boards.filter(_.cid === cid)
 
  		val result : Future[Seq[Board]] = Global.db.run(query.result)
  		result
  	}
 
- 	def updateName(id: Long, name: String) = {
+ 	def updateName(id: UUID, name: String) = {
  		val action = boards.filter(_.id === id)
- 						   .map(b => b.name)
+      .map(b => b.name)
  						   .update(name)
 
  		Global.db.run(action)
  	}
 
- 	def delete(id: Long) = {
+ 	def delete(id: UUID) = {
  		val action = boards.filter(_.id === id)
- 						   .delete
+      .delete
 
  		Global.db.run(action)
  	}

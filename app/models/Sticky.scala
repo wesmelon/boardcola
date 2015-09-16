@@ -1,6 +1,7 @@
 package models
 
-import java.sql._
+import java.util.UUID
+import java.sql.Timestamp
 import java.util.Calendar
 
 import scala.concurrent.Future
@@ -9,11 +10,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.json._
 
-case class Sticky(id: Option[Long], bid: Long, name: Option[String], content: String, xPos: Option[Int], yPos: Option[Int], creationTime: Timestamp, lastModified: Option[Timestamp])
+case class Sticky(id: Option[UUID], bid: UUID, name: Option[String], content: String, xPos: Option[Int], yPos: Option[Int], creationTime: Timestamp, lastModified: Option[Timestamp])
 
 class Stickies(tag: Tag) extends Table[Sticky](tag, "stickies") {
-	def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-	def bid = column[Long]("board_id")
+	def id = column[UUID]("id", O.PrimaryKey, O.AutoInc)
+	def bid = column[UUID]("board_id")
 	def name = column[String]("name", O.Default(""))
 	def content = column[String]("content")
 	def xPos = column[Int]("x", O.Default(0))
@@ -59,14 +60,14 @@ object Sticky {
  		result
  	}
 
- 	def findById(id: Long) : Future[Sticky] = {
+ 	def findById(id: UUID) : Future[Sticky] = {
  		val query = stickies.filter(_.id === id)
 
  		val result : Future[Sticky] = Global.db.run(query.result.head)
  		result
  	}
 
- 	def findByBid(bid: Long) : Future[Seq[Sticky]] = {
+ 	def findByBid(bid: UUID) : Future[Seq[Sticky]] = {
  		val query = stickies.filter(_.bid === bid)
 
  		val result : Future[Seq[Sticky]] = Global.db.run(query.result)
@@ -74,25 +75,25 @@ object Sticky {
  	}
 
  	// Maybe combine this one with the one below
- 	def updateName(id: Long, name: String) = {
+ 	def updateName(id: UUID, name: String) = {
  		val action = stickies.filter(_.id === id)
- 							 .map(b => b.name)
-							 .update(name)
+ 			.map(b => b.name)
+			.update(name)
 
  		Global.db.run(action)
  	}
 
- 	def updateContent(id: Long, content: String) = {
+ 	def updateContent(id: UUID, content: String) = {
  		val action = stickies.filter(_.id === id)
- 							 .map(b => b.content)
- 							 .update(content)
+      .map(b => b.content)
+ 			.update(content)
 
  		Global.db.run(action)
  	}
 
- 	def delete(id: Long) = {
+ 	def delete(id: UUID) = {
  		val action = stickies.filter(_.id === id)
- 							 .delete
+      .delete
 
  		Global.db.run(action)
  	}
