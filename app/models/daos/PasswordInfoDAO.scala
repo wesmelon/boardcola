@@ -1,5 +1,7 @@
 package models.daos
 
+import models.Global
+
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
@@ -12,12 +14,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.mutable
 import scala.concurrent.Future
 
-class Passwords(tag: Tag) extends Table[PasswordInfo](tag, "passwords") {
+case class PasswordInfoWithIdentifier(
+  providerId: String,
+  providerKey: String,
+  hasher: String,
+  password: String,
+  salt: Option[String] = None
+)
+
+class Passwords(tag: Tag) extends Table[PasswordInfoWithIdentifier](tag, "passwords") {
+  def providerId = column[String]("providerId")
+  def providerKey = column[String]("providerKey")
   def hasher = column[String]("hasher")
   def password = column[String]("password")
   def salt = column[Option[String]]("salt")
 
-  def * = (hasher, password, salt) <> (PasswordInfo.tupled, PasswordInfo.unapply)
+  def * = (providerId, providerKey, hasher, password, salt) <> (PasswordInfoWithIdentifier.tupled, PasswordInfoWithIdentifier.unapply)
 }
 
 /**
@@ -101,10 +113,41 @@ object PasswordInfoDAO {
 
   val passwords = TableQuery[Passwords]
 
-  def insert(passwordInfo: PasswordInfo) : Future[PasswordInfo] = {
-    val action = passwords.map(p => (p.hasher, p.password, p.salt)) +=
-      (passwordInfo.hasher, passwordInfo.password, passwordInfo.salt)
+  def insert(loginInfo: LoginInfo, authInfo: PasswordInfo) : Future[PasswordInfo] = {
+    val action = passwords.map(p => (p.providerId, p.providerKey, p.hasher, p.password, p.salt)) +=
+      (loginInfo.providerID, loginInfo.providerKey, authInfo.hasher, authInfo.password, authInfo.salt)
 
-    Future.successful(passwordInfo)
+    Global.db.run(action)
+    Future.successful(authInfo)
+  }
+
+  def findByProviderIdAndKey(loginInfo: LoginInfo) : Future[Option[PasswordInfo]] = {
+    val query = passwords.filter(p => p.providerId === loginInfo.providerID && p.providerKey === loginInfo.providerKey)
+
+    val futureResult : Future[Option[PasswordInfoWithIdentifier]] = Global.db.run(query.result.headOption)
+    val result : Future[Option[PasswordInfo]] = futureResult.map(futurePw =>
+      futurePw match {
+        case Some(pw) => Some(PasswordInfo(pw.hasher, pw.password, pw.salt))
+        case None => None
+      }
+    )
+
+    result
+  }
+
+  def update(loginInfo: LoginInfo, authInfo: PasswordInfo) : Future[PasswordInfo] = {
+    val action = passwords.filter(p => p.providerId === loginInfo.providerID && p.providerKey === loginInfo.providerKey)
+      .map(p => (p.hasher, p.password, p.salt))
+      .update(authInfo.hasher, authInfo.password, authInfo.salt)
+
+    Global.db.run(action)
+    Future.successful(authInfo)
+  }
+
+  def remove(loginInfo: LoginInfo) = {
+    val action = passwords.filter(p => p.providerId === loginInfo.providerID && p.providerKey === loginInfo.providerKey)
+      .delete
+
+    Global.db.run(action)
   }
 }
