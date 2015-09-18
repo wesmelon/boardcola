@@ -23,8 +23,8 @@ case class PasswordInfoWithIdentifier(
 )
 
 class Passwords(tag: Tag) extends Table[PasswordInfoWithIdentifier](tag, "passwords") {
-  def providerId = column[String]("providerId")
-  def providerKey = column[String]("providerKey")
+  def providerId = column[String]("provider_id")
+  def providerKey = column[String]("provider_key")
   def hasher = column[String]("hasher")
   def password = column[String]("password")
   def salt = column[Option[String]]("salt")
@@ -44,7 +44,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The retrieved auth info or None if no auth info could be retrieved for the given login info.
    */
   def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
-    Future.successful(data.get(loginInfo))
+    findByProviderIdAndKey(loginInfo)
   }
 
   /**
@@ -55,8 +55,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The added auth info.
    */
   def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    data += (loginInfo -> authInfo)
-    Future.successful(authInfo)
+    insert(loginInfo, authInfo)
   }
 
   /**
@@ -67,8 +66,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The updated auth info.
    */
   def update(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    data += (loginInfo -> authInfo)
-    Future.successful(authInfo)
+    update(loginInfo, authInfo)
   }
 
   /**
@@ -95,7 +93,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return A future to wait for the process to be completed.
    */
   def remove(loginInfo: LoginInfo): Future[Unit] = {
-    data -= loginInfo
+    delete(loginInfo)
     Future.successful(())
   }
 }
@@ -104,13 +102,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
  * The companion object.
  */
 object PasswordInfoDAO {
-
-  /**
-   * The data store for the password info.
-   */
-  var data: mutable.HashMap[LoginInfo, PasswordInfo] = mutable.HashMap()
-
-
   val passwords = TableQuery[Passwords]
 
   def insert(loginInfo: LoginInfo, authInfo: PasswordInfo) : Future[PasswordInfo] = {
@@ -144,7 +135,7 @@ object PasswordInfoDAO {
     Future.successful(authInfo)
   }
 
-  def remove(loginInfo: LoginInfo) = {
+  def delete(loginInfo: LoginInfo) = {
     val action = passwords.filter(p => p.providerId === loginInfo.providerID && p.providerKey === loginInfo.providerKey)
       .delete
 

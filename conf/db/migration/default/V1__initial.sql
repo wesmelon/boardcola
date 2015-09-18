@@ -1,17 +1,24 @@
--- !Ups
- 
 DROP TABLE IF EXISTS users, categories, boards, board_shared_with_user, favorites, comments, board_chat;
 
 -- Users, their emails, names and passwords
 CREATE TABLE users
 (
 	id SERIAL PRIMARY KEY,
+	provider_id TEXT NOT NULL,
+	provider_key TEXT NOT NULL
 	email TEXT UNIQUE NOT NULL,
 	username TEXT UNIQUE NOT NULL,
-	password TEXT NOT NULL,
-	auth_token TEXT,
 	creation_time TIMESTAMP NOT NULL,
 	last_login TIMESTAMP
+);
+
+CREATE TABLE passwords
+(
+	provider_id TEXT NOT NULL,
+	provider_key TEXT NOT NULL,
+	hasher TEXT NOT NULL,
+	password TEXT NOT NULL,
+	salt TEXT
 );
 
 -- Categories hold which boards are where in relation to user
