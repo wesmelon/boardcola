@@ -8,4 +8,5 @@ target
 /RUNNING_PID
 
 # Don't push application.conf #
+activator*
 conf/application.conf
