@@ -1,4 +1,4 @@
-package controllers
+package controllers.auth
 
 import java.util.UUID
 import javax.inject.Inject
@@ -26,16 +26,14 @@ import scala.concurrent.Future
  * @param env The Silhouette environment.
  * @param userService The user service implementation.
  * @param authInfoRepository The auth info repository implementation.
- * @param avatarService The avatar service implementation.
  * @param passwordHasher The password hasher implementation.
  */
-class SignUpController @Inject() (
-  val messagesApi: MessagesApi,
-  val env: Environment[User, JWTAuthenticator],
-  userService: UserService,
-  authInfoRepository: AuthInfoRepository,
-  avatarService: AvatarService,
-  passwordHasher: PasswordHasher)
+class SignUp @Inject() (
+    val messagesApi: MessagesApi,
+    val env: Environment[User, JWTAuthenticator],
+    userService: UserService,
+    authInfoRepository: AuthInfoRepository,
+    passwordHasher: PasswordHasher)
   extends Silhouette[User, JWTAuthenticator] {
 
   /**
@@ -72,6 +70,7 @@ class SignUpController @Inject() (
       }
     }.recoverTotal {
       case error =>
+      println(error)
         Future.successful(Unauthorized(Json.obj("message" -> Messages("invalid.data"))))
     }
   }

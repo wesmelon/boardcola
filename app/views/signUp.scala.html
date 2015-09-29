@@ -1,0 +1,34 @@
+@()(implicit request: RequestHeader, messages: Messages)
+
+@import b3.inline.fieldConstructor
+@import forms.SignUpForm.form
+
+<fieldset class="col-md-6 col-md-offset-3" ng-controller="SignUpCtrl">
+  <legend >@Messages("sign.up.account")</legend>
+  <form name="form" id="sign-up-form" ng-submit="submit()" ng-model-options="{ updateOn: 'submit blur' }" autocomplete="off">
+
+    @b3.text(form("email"), '_hiddenLabel -> Messages("email"), 'placeholder -> Messages("email"), 'class -> "form-control input-lg", 'required -> "", Symbol("ng-model") -> "email")
+    <div class="help-block text-danger" ng-if="form.email.$dirty" ng-messages="form.email.$error">
+      <div ng-message="required">@Messages("error.required")</div>
+      <div ng-message="email">@Messages("error.email")</div>
+    </div>
+
+    @b3.text(form("username"), '_hiddenLabel -> Messages("username"), 'placeholder -> Messages("username"), 'class -> "form-control input-lg", 'required -> "", Symbol("ng-model") -> "username")
+    <div class="help-block text-danger" ng-if="form.username.$dirty" ng-messages="form.username.$error">
+      <div ng-message="required">@Messages("error.required")</div>
+    </div>
+
+    @b3.password(form("password"), '_hiddenLabel -> Messages("password"), 'placeholder -> Messages("password"), 'class -> "form-control input-lg", 'required -> "", Symbol("ng-model") -> "password")
+    <div class="help-block text-danger" ng-if="form.password.$dirty" ng-messages="form.password.$error">
+      <div ng-message="required">@Messages("error.required")</div>
+    </div>
+
+    <div class="form-group">
+      <button ng-disabled="form.$invalid" id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@Messages("sign.up")</button>
+    </div>
+
+    <div>
+      <p class="already-member">@Messages("already.a.member") <a ui-sref="signIn">@Messages("sign.in.now")</a></p>
+    </div>
+  </form>
+</fieldset>

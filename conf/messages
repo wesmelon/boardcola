@@ -1,0 +1,26 @@
+username = Username
+email = Email
+password = Password
+
+welcome.signed.in = Welcome!
+sign.up.account = Sign up for a new account
+sign.in.credentials = Sign in
+
+toggle.navigation = Toggle navigation
+home = Home
+sign.in = Sign in
+sign.up = Sign up
+sign.in.now = Sign in now
+sign.up.now = Sign up now
+remember.me = Remember my login
+not.a.member = Not a member?
+already.a.member = Already a member?
+or.use.social = Or use your existing account on one of the following services to sign in:
+
+error.email = Valid email required
+error.required = This field is required
+invalid.credentials = Invalid credentials
+invalid.data = Invalid data
+access.denied = Access denied
+user.already.exists = This user already exists with this email
+could.not.authenticate = Could not authenticate with this social provider

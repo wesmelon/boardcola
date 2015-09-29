@@ -13,6 +13,8 @@ resolvers ++= Seq(
   "Atlassian Releases" at "https://maven.atlassian.com/public/"
 )
 
+// referenced for help:
+// https://github.com/mohiva/play-silhouette-angular-seed
 libraryDependencies ++= Seq(
   jdbc,
   cache,
@@ -31,7 +33,13 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick"  %% "slick" % "3.0.2",
   "org.slf4j" % "slf4j-nop" % "1.6.4",
 
-  "org.flywaydb" %% "flyway-play" % "2.2.0"
+  "org.flywaydb" %% "flyway-play" % "2.2.0",
+
+  // Dependency injection
+  "net.codingwell" %% "scala-guice" % "4.0.0",
+  "net.ceedubs" %% "ficus" % "1.1.2",
+
+  "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24"
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the
