@@ -7,7 +7,7 @@ GET       /                                com.tuplejump.playYeoman.Yeoman.index
 
 # Authentication
 POST      /signUp                          controllers.auth.SignUp.signUp
-#POST      /signIn                          controllers.CredentialsAuthControllers.authenticate
+POST      /signIn                          controllers.auth.CredentialsAuth.authenticate
 
 GET 	    /api/stickies                    controllers.Sticky.getAllStickies
 # GET	  /users                             controllers.Application.getUsers

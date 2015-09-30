@@ -39,9 +39,7 @@ class UserDAOImpl extends UserDAO {
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def findByLoginInfo(loginInfo: LoginInfo) = {
-    findByProviderIdAndKey(loginInfo.providerID, loginInfo.providerKey)
-  }
+  def findByLoginInfo(loginInfo: LoginInfo) = findByProviderIdAndKey(loginInfo.providerID, loginInfo.providerKey)
 
   /**
    * Finds a user by its user ID.
@@ -49,19 +47,14 @@ class UserDAOImpl extends UserDAO {
    * @param userID The ID of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def findById(id: UUID) = {
-    findById(id)
-  }
-
+  def findById(id: UUID) = findById(id)
   /**
    * Creates a user.
    *
    * @param user The user to create.
    * @return The created user.
    */
-  def create(user: User) = {
-    insert(user)
-  }
+  def create(user: User) = insert(user)
 
   /**
    * Saves a user.
@@ -69,9 +62,7 @@ class UserDAOImpl extends UserDAO {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = {
-    update(user)
-  }
+  def save(user: User) = update(user)
 }
 
 /**
@@ -81,6 +72,7 @@ object UserDAOImpl {
   val users = TableQuery[Users]
   
   def insert(user: User) : Future[User] = {
+    println("inserting " + user)
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
     val action = users.map(u => (u.providerId, u.providerKey, u.email, u.username, u.creationTime)) += 
@@ -105,6 +97,7 @@ object UserDAOImpl {
   }
 
   def findByProviderIdAndKey(id: String, key: String) : Future[Option[User]] = {
+    println("finding " + id + " " + key)
     val query = users.filter(u => u.providerId === id && u.providerKey === key)
     
     val result : Future[Option[User]] = Global.db.run(query.result.headOption)
@@ -112,6 +105,7 @@ object UserDAOImpl {
   }
 
   def update(user: User) : Future[User] = {
+    println("updating " + user)
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
 
@@ -124,6 +118,7 @@ object UserDAOImpl {
   }
 
   def updateEmail(id: UUID, email: String) = {
+    println("updating " + id + " " + email)
     val action = users.filter(_.userId === id)
       .map(u => u.email)
       .update(email)
@@ -132,6 +127,7 @@ object UserDAOImpl {
   }
 
   def delete(id: UUID) = {
+    println("deleting " + id)
     val action = users.filter(_.userId === id)
       .delete
 

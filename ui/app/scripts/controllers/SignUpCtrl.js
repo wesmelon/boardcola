@@ -12,8 +12,7 @@ app.controller('SignUpCtrl', ['$scope', '$alert', '$auth', function($scope, $ale
    */
   $scope.submit = function() {
     $auth.signup({
-      firstName: $scope.firstName,
-      lastName: $scope.lastName,
+      username: $scope.username,
       email: $scope.email,
       password: $scope.password
     }).then(function() {

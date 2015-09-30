@@ -35,6 +35,14 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
   def save(user: User) = userDAO.save(user)
 
   /**
+   * Creates a user.
+   *
+   * @param user The user to save.
+   * @return The saved user.
+   */
+  def create(user: User) = userDAO.create(user)
+
+  /**
    * Saves the social profile for a user.
    *
    * If a user exists for this profile then update the user, otherwise create a new user with the given profile.

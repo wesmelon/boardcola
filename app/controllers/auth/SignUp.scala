@@ -59,6 +59,7 @@ class SignUp @Inject() (
             lastLogin = None
           )
           for {
+            user <- userService.create(user)
             authInfo <- authInfoRepository.add(loginInfo, authInfo)
             authenticator <- env.authenticatorService.create(loginInfo)
             token <- env.authenticatorService.init(authenticator)
