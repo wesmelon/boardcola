@@ -50,8 +50,8 @@ class SignUp @Inject() (
         case None =>
           val authInfo = passwordHasher.hash(data.password)
           val user = User(
-            userId = Some(UUID.randomUUID()),
-            providerId = loginInfo.providerID,
+            userID = UUID.randomUUID(),
+            providerID = loginInfo.providerID,
             providerKey = loginInfo.providerKey,
             email = data.email,
             username = data.username,

@@ -1,7 +1,7 @@
 -- Users, their emails, names and passwords
 CREATE TABLE users
 (
-	id SERIAL PRIMARY KEY,
+	uuid TEXT PRIMARY KEY,
 	provider_id TEXT NOT NULL,
 	provider_key TEXT NOT NULL,
 	email TEXT UNIQUE NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE passwords
 CREATE TABLE categories
 (
 	id SERIAL PRIMARY KEY,
-	user_id INT REFERENCES users,
+	user_id TEXT REFERENCES users,
 	name TEXT NOT NULL	
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE boards
 CREATE TABLE board_shared_with_user
 (
 	board_id INT REFERENCES boards,
-	user_id INT REFERENCES users,
+	user_id TEXT REFERENCES users,
 	edit_privileges BOOLEAN
 );
 
@@ -59,20 +59,20 @@ CREATE TABLE stickies
 
 CREATE TABLE favorites
 (
-	user_id INT REFERENCES users,
+	user_id TEXT REFERENCES users,
 	sticky_id INT REFERENCES stickies
 );
 
 CREATE TABLE comments
 (
-	user_id INT REFERENCES users,
+	user_id TEXT REFERENCES users,
 	sticky_id INT REFERENCES stickies,
 	comment TEXT NOT NULL
 );
 
 CREATE TABLE board_chat
 (
-	user_id INT REFERENCES users,
+	user_id TEXT REFERENCES users,
 	board_id INT REFERENCES boards,
 	message TEXT NOT NULL,
 	creation_time TIMESTAMP NOT NULL

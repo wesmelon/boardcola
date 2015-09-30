@@ -8,8 +8,8 @@ import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 /**
  * The user object.
  *
- * @param userId
- * @param providerId
+ * @param userID
+ * @param providerID
  * @param providerKey
  * @param email
  * @param username
@@ -17,8 +17,8 @@ import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
  * @param lastLogin
  */
 case class User(
-  userId: Option[UUID], 
-  providerId: String,
+  userID: UUID, 
+  providerID: String,
   providerKey: String,
   email: String,
   username: String,

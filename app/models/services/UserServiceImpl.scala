@@ -54,7 +54,7 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
     userDAO.findByLoginInfo(profile.loginInfo).flatMap {
       case Some(user) => // Update user with profile
         userDAO.save(user.copy(
-          providerId = profile.loginInfo.providerID,
+          providerID = profile.loginInfo.providerID,
           providerKey = profile.loginInfo.providerKey,
           email = profile.email,
           username = profile.username,
@@ -63,8 +63,8 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
         ))
       case None => // Insert a new user
         userDAO.create(User(
-          userId = Some(UUID.randomUUID()),
-          providerId = profile.loginInfo.providerID,
+          userID = UUID.randomUUID(),
+          providerID = profile.loginInfo.providerID,
           providerKey = profile.loginInfo.providerKey,
           email = profile.email,
           username = profile.username,

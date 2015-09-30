@@ -15,7 +15,7 @@ class Categories(tag: Tag) extends Table[Category](tag, "categories") {
 	def name = column[String]("name")
 
   def * = (id.?, uid, name) <> ((Category.apply _).tupled, Category.unapply)
-	def user = foreignKey("u_fk", uid, UserDAOImpl.users)(_.userId, onDelete=ForeignKeyAction.Cascade)
+	def user = foreignKey("u_fk", uid, UserDAOImpl.users)(_.userID, onDelete=ForeignKeyAction.Cascade)
 }
 
 /*

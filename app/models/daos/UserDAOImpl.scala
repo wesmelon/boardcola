@@ -18,15 +18,15 @@ import scala.concurrent.Future
  * Mapping of the users in the database to the User case class.
  */
 class Users(tag: Tag) extends Table[User](tag, "users") {
-  def userId = column[UUID]("id", O.PrimaryKey, O.AutoInc)
-  def providerId = column[String]("provider_id")
+  def userID = column[UUID]("uuid", O.PrimaryKey)
+  def providerID = column[String]("provider_id")
   def providerKey = column[String]("provider_key")
   def email = column[String]("email")
   def username = column[String]("username")
   def creationTime = column[Option[Timestamp]]("creation_time")
   def lastLogin = column[Option[Timestamp]]("last_login", O.Default(None))
 
-  def * = (userId.?, providerId, providerKey, email, username, creationTime, lastLogin) <> ((User.apply _).tupled, User.unapply)
+  def * = (userID, providerID, providerKey, email, username, creationTime, lastLogin) <> ((User.apply _).tupled, User.unapply)
 }
 
 /**
@@ -48,6 +48,7 @@ class UserDAOImpl extends UserDAO {
    * @return The found user or None if no user for the given ID could be found.
    */
   def findById(id: UUID) = findById(id)
+
   /**
    * Creates a user.
    *
@@ -75,8 +76,8 @@ object UserDAOImpl {
     println("inserting " + user)
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
-    val action = users.map(u => (u.providerId, u.providerKey, u.email, u.username, u.creationTime)) += 
-      (user.providerId, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
+    val action = users.map(u => (u.userID, u.providerID, u.providerKey, u.email, u.username, u.creationTime)) += 
+      (user.userID, user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
 
     Global.db.run(action)
     Future.successful(user)
@@ -90,7 +91,7 @@ object UserDAOImpl {
   }
 
   def findById(id: UUID) : Future[Option[User]] = {
-    val query = users.filter(u => u.userId === id)
+    val query = users.filter(u => u.userID === id)
     
     val result : Future[Option[User]] = Global.db.run(query.result.headOption)
     result
@@ -98,7 +99,7 @@ object UserDAOImpl {
 
   def findByProviderIdAndKey(id: String, key: String) : Future[Option[User]] = {
     println("finding " + id + " " + key)
-    val query = users.filter(u => u.providerId === id && u.providerKey === key)
+    val query = users.filter(u => u.providerID === id && u.providerKey === key)
     
     val result : Future[Option[User]] = Global.db.run(query.result.headOption)
     result
@@ -109,9 +110,9 @@ object UserDAOImpl {
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
 
-    val action = users.filter(_.userId === user.userId)
-      .map(u => (u.providerId, u.providerKey, u.email, u.username, u.lastLogin))
-      .update(user.providerId, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
+    val action = users.filter(_.userID === user.userID)
+      .map(u => (u.providerID, u.providerKey, u.email, u.username, u.lastLogin))
+      .update(user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
 
     Global.db.run(action)
     Future.successful(user)
@@ -119,7 +120,7 @@ object UserDAOImpl {
 
   def updateEmail(id: UUID, email: String) = {
     println("updating " + id + " " + email)
-    val action = users.filter(_.userId === id)
+    val action = users.filter(_.userID === id)
       .map(u => u.email)
       .update(email)
 
@@ -128,7 +129,7 @@ object UserDAOImpl {
 
   def delete(id: UUID) = {
     println("deleting " + id)
-    val action = users.filter(_.userId === id)
+    val action = users.filter(_.userID === id)
       .delete
 
     Global.db.run(action)
