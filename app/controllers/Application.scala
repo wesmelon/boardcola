@@ -13,26 +13,45 @@ import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 
+import play.api.libs.json._
+
 class Application @Inject() (
     val messagesApi: MessagesApi,
     val env: Environment[User, JWTAuthenticator],
     socialProviderRegistry: SocialProviderRegistry) 
   extends Silhouette[User, JWTAuthenticator] {
-  
+
+  /**
+   * Returns the user.
+   *
+   * @return The result to display.
+   */
+  def user = SecuredAction.async { implicit request =>
+    Future.successful(Ok(Json.toJson(request.identity)))
+  }
+
+  /**
+   * Manages the sign out action.
+   */
+  def signOut = SecuredAction.async { implicit request =>
+    env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
+    env.authenticatorService.discard(request.authenticator, Ok)
+  }
+
   /**
    * Template views
    * 
    * @param template Provided template
    * @return the template
    */
-   def view(template: String) = UserAwareAction { implicit request =>
-      template match {
-        case "home" => Ok(views.html.home())
-        case "signUp" => Ok(views.html.signUp())
-        case "signIn" => Ok(views.html.signIn(socialProviderRegistry))
-        case "navigation" => Ok(views.html.navigation())
-        case _ => NotFound
-      }
-   }
+  def view(template: String) = UserAwareAction { implicit request =>
+    template match {
+      case "home" => Ok(views.html.home())
+      case "signUp" => Ok(views.html.signUp())
+      case "signIn" => Ok(views.html.signIn(socialProviderRegistry))
+      case "navigation" => Ok(views.html.navigation())
+      case _ => NotFound
+    }
+  }
 }
 

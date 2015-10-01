@@ -5,7 +5,7 @@
 /**
  * The sign out controller.
  */
-app.controller('SignOutCtrl', ['$auth', '$alert', function($auth, $alert) {
+app.controller('SignOutCtrl', ['$auth', '$alert', '$location', function($auth, $alert, $location) {
   if (!$auth.isAuthenticated()) {
     return;
   }
@@ -17,5 +17,7 @@ app.controller('SignOutCtrl', ['$auth', '$alert', function($auth, $alert) {
         type: 'material',
         duration: 3
       });
+
+      $location.path('/');
     });
 }]);

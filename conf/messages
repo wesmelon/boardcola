@@ -7,8 +7,10 @@ sign.up.account = Sign up for a new account
 sign.in.credentials = Sign in
 
 toggle.navigation = Toggle navigation
+user.exists = User already exists
 home = Home
 sign.in = Sign in
+sign.out = Sign out
 sign.up = Sign up
 sign.in.now = Sign in now
 sign.up.now = Sign up now

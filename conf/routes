@@ -5,13 +5,15 @@
 # Home page
 GET       /                                com.tuplejump.playYeoman.Yeoman.index
 
+# API
+GET       /api/me                          controllers.Application.user
+
 # Authentication
-POST      /signUp                          controllers.auth.SignUp.signUp
-POST      /signIn                          controllers.auth.CredentialsAuth.authenticate
+POST      /auth/signup                     controllers.auth.SignUp.signUp
+POST      /auth/login                      controllers.auth.CredentialsAuth.authenticate
+GET       /auth/logout                     controllers.Application.signOut
 
 GET 	    /api/stickies                    controllers.Sticky.getAllStickies
-# GET	  /users                             controllers.Application.getUsers
-# POST	/users						                 controllers.Application.createUser
 
 # Dynamic part of the url
 GET       /views/$template<.+>.html        controllers.Application.view(template)

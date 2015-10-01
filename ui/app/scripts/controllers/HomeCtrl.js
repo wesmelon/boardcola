@@ -5,13 +5,13 @@
 /**
  * The home controller.
  */
-app.controller('HomeCtrl', ['$rootScope', '$scope', '$alert', 'UserFactory', function($rootScope, $scope, $alert, UserFactory) {
+app.controller('HomeCtrl', ['$rootScope', '$scope', '$alert', 'Account', function($rootScope, $scope, $alert, Account) {
 
   /**
    * Initializes the controller.
    */
   $scope.init = function() {
-    UserFactory.get()
+    Account.getProfile()
       .success(function(data) {
         $rootScope.user = data;
       })

@@ -5,7 +5,7 @@
 /**
  * The sign in controller.
  */
-app.controller('SignInCtrl', ['$scope', '$alert', '$auth', function($scope, $alert, $auth) {
+app.controller('SignInCtrl', ['$scope', '$alert', '$auth', '$location', function($scope, $alert, $auth, $location) {
 
   /**
    * Submits the login form.
@@ -20,6 +20,8 @@ app.controller('SignInCtrl', ['$scope', '$alert', '$auth', function($scope, $ale
           type: 'material',
           duration: 3
         });
+
+        $location.path('/');
       })
       .catch(function(response) {
         console.log(response);
@@ -46,6 +48,8 @@ app.controller('SignInCtrl', ['$scope', '$alert', '$auth', function($scope, $ale
           type: 'material',
           duration: 3
         });
+
+        $location.path('/');
       })
       .catch(function(response) {
         $alert({

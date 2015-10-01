@@ -43,7 +43,7 @@ object Sticky {
 		    "creationTime" -> sticky.creationTime,
 		    "lastModified" -> sticky.lastModified
 		)
-    }
+  }
     
 	def create(sticky: Sticky) = {
 		val calendar : Calendar = Calendar.getInstance()
