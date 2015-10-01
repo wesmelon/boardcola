@@ -4,12 +4,12 @@
  * @ngdoc overview
  * @name uiApp
  * @description
- * # uiApp
+ * # boardcola
  *
  * Main module of the application.
  */
 var app = angular
-  .module('boardcola', ['ngResource', 'ngMessages', 'ngAnimate', 'ngCookies', 'ui.router', 'satellizer']);
+  .module('boardcola', ['ngResource', 'ngMessages', 'ngAnimate', 'ngCookies', 'ui.router', 'satellizer', 'toastr']);
 
 app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authProvider) {
   

@@ -5,13 +5,12 @@
 /**
  * The logout controller.
  */
-app.controller('LogoutCtrl', ['$auth', '$location', function($auth, $location) {
-  if (!$auth.isAuthenticated()) {
-    return;
-  }
+app.controller('LogoutCtrl', function($auth, $location, toastr) {
+  if (!$auth.isAuthenticated()) { return; }
+
   $auth.logout()
     .then(function() {
-
-      $location.path('/');
+      toastr.info('You have been logged out');
+      $location.path('/login');
     });
-}]);
+});

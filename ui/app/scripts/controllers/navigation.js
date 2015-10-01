@@ -5,7 +5,7 @@
 /**
  * The navigation controller.
  */
-app.controller('NavigationCtrl', ['$scope', '$auth', function($scope, $auth) {
+app.controller('NavigationCtrl', function($scope, $auth) {
 
   /**
    * Indicates if the user is authenticated or not.
@@ -15,4 +15,4 @@ app.controller('NavigationCtrl', ['$scope', '$auth', function($scope, $auth) {
   $scope.isAuthenticated = function() {
     return $auth.isAuthenticated();
   };
-}]);
+});

@@ -5,7 +5,7 @@
 /**
  * The sign in controller.
  */
-app.controller('LoginCtrl', ['$scope', '$auth', '$location', function($scope, $auth, $location) {
+app.controller('LoginCtrl', function($scope, $auth, $location, toastr) {
 
   /**
    * Submits the login form.
@@ -14,11 +14,11 @@ app.controller('LoginCtrl', ['$scope', '$auth', '$location', function($scope, $a
     $auth.setStorageType($scope.rememberMe ? 'localStorage' : 'sessionStorage');
     $auth.login({ email: $scope.email, password: $scope.password, rememberMe: $scope.rememberMe })
       .then(function() {
-
+        toastr.success('You have successfully signed in');
         $location.path('/');
       })
       .catch(function(response) {
-        console.log(response);
+        toastr.error(response.data.message, response.status);
 
       });
   };
@@ -31,11 +31,11 @@ app.controller('LoginCtrl', ['$scope', '$auth', '$location', function($scope, $a
   $scope.authenticate = function(provider) {
     $auth.authenticate(provider)
       .then(function() {
-
+        toastr.success('You have successfully signed in with ' + provider);
         $location.path('/');
       })
       .catch(function(response) {
-
+        toastr.error(response.data.message);
       });
   };
-}]);
+});

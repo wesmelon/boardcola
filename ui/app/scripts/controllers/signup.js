@@ -5,11 +5,8 @@
 /**
  * The sign up controller.
  */
-app.controller('SignUpCtrl', ['$scope', '$auth', '$location', function($scope, $auth, $location) {
+app.controller('SignUpCtrl', function($scope, $auth, $location, toastr) {
 
-  /**
-   * The submit method.
-   */
   $scope.submit = function() {
     $auth.signup({
       username: $scope.username,
@@ -18,10 +15,12 @@ app.controller('SignUpCtrl', ['$scope', '$auth', '$location', function($scope, $
     }).then(function(response) {
 
       $auth.setToken(response);
+      toastr.info('You have successfully created a new account and have been signed-in');
       $location.path('/');
 
     }).catch(function(response) {
-
+      toastr.error(response.data.message);
+      
     });
   };
-}]);
+});
