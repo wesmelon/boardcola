@@ -5,7 +5,7 @@
 /**
  * The home controller.
  */
-app.controller('HomeCtrl', ['$rootScope', '$scope', '$alert', 'Account', function($rootScope, $scope, $alert, Account) {
+app.controller('HomeCtrl', ['$rootScope', '$scope', 'Account', function($rootScope, $scope, Account) {
 
   /**
    * Initializes the controller.
@@ -16,12 +16,7 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', '$alert', 'Account', functio
         $rootScope.user = data;
       })
       .error(function(error) {
-        $alert({
-          content: error.message,
-          animation: 'fadeZoomFadeDown',
-          type: 'material',
-          duration: 3
-        });
+
       });
   };
 }]);

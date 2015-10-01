@@ -9,59 +9,40 @@
  * Main module of the application.
  */
 var app = angular
-  .module('uiApp', [
-    'ngResource',
-    'ngMessages',
-    'ngAnimate',
-    'ngCookies',
-    'ui.router',
-    'satellizer',
-    'mgcrea.ngStrap'
-  ]);
-
-app.run(function($rootScope) {
-  /**
-   * The user data.
-   *
-   * @type {{}}
-   */
-  $rootScope.user = {};
-});
+  .module('boardcola', ['ngResource', 'ngMessages', 'ngAnimate', 'ngCookies', 'ui.router', 'satellizer']);
 
 app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authProvider) {
   
-  $urlRouterProvider.otherwise('/home');
 
   $stateProvider
     .state('home', { 
-      url: '/home', 
-      templateUrl: '/views/home.html', resolve: {
-        authenticated: function($q, $location, $auth) {
-          var deferred = $q.defer();
-
-          if (!$auth.isAuthenticated()) {
-            $location.path('/signIn');
-          } else {
-            deferred.resolve();
-          }
-
-          return deferred.promise;
-        }
+      url: '/', 
+      templateUrl: '/views/home.html', 
+      resolve: {
+        loginRequired: loginRequired 
       }
     })
-    .state('signUp', { 
-      url: '/signUp', 
-      templateUrl: '/views/signUp.html' 
+    .state('signup', { 
+      url: '/signup', 
+      templateUrl: '/views/signup.html',
+      resolve: {
+        skipIfLoggedIn: skipIfLoggedIn
+      }
     })
-    .state('signIn', { 
-      url: '/signIn', 
-      templateUrl: '/views/signIn.html' 
+    .state('login', { 
+      url: '/login', 
+      templateUrl: '/views/login.html',
+      resolve: {
+        skipIfLoggedIn: skipIfLoggedIn
+      } 
     })
-    .state('signOut', { 
-      url: '/signOut', 
+    .state('logout', { 
+      url: '/logout', 
       template: null, 
-      controller: 'SignOutCtrl' 
+      controller: 'LogoutCtrl' 
     });
+
+  $urlRouterProvider.otherwise('/home');
 
   $httpProvider.interceptors.push(function($q, $injector) {
     return {
@@ -88,10 +69,33 @@ app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authPro
         if (rejection.status === 401) {
           var $auth = $injector.get('$auth');
           $auth.logout();
-          $injector.get('$state').go('signIn');
+          $injector.get('$state').go('login');
         }
         return $q.reject(rejection);
       }
     };
   });
+
+  function skipIfLoggedIn($q, $auth) {
+    var deferred = $q.defer();
+
+    if ($auth.isAuthenticated()) {
+      deferred.reject();
+    } else {
+      deferred.resolve();
+    }
+    return deferred.promise;
+  }
+
+  function loginRequired($q, $location, $auth) {
+    var deferred = $q.defer();
+
+    if (!$auth.isAuthenticated()) {
+      $location.path('/login');
+    } else {
+      deferred.resolve();
+    }
+
+    return deferred.promise;
+  }
 });

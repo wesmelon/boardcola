@@ -47,8 +47,8 @@ class Application @Inject() (
   def view(template: String) = UserAwareAction { implicit request =>
     template match {
       case "home" => Ok(views.html.home())
-      case "signUp" => Ok(views.html.signUp())
-      case "signIn" => Ok(views.html.signIn(socialProviderRegistry))
+      case "signup" => Ok(views.html.signup())
+      case "login" => Ok(views.html.login(socialProviderRegistry))
       case "navigation" => Ok(views.html.navigation())
       case _ => NotFound
     }
