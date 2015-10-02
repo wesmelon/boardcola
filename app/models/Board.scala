@@ -8,6 +8,8 @@ import scala.concurrent.Future
 import slick.driver.H2Driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import play.api.libs.json._
+
 case class Board(id: Option[UUID], cid: UUID, name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
 
 class Boards(tag: Tag) extends Table[Board](tag, "boards") {
@@ -26,6 +28,16 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
  */
  object Board {
  	val boards = TableQuery[Boards]
+
+	implicit val boardWrites = new Writes[Board] {
+	    def writes(board: Board) = Json.obj(
+		    "id" -> board.id,
+		    "cid" -> board.cid,
+		    "name" -> board.name,
+		    "creationTime" -> board.creationTime,
+		    "lastModified" -> board.lastModified
+		)
+  }
 
  	def create(board: Board) = {
 		val calendar : Calendar = Calendar.getInstance()

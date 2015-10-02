@@ -7,6 +7,8 @@ import scala.concurrent.Future
 import slick.driver.H2Driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
+import play.api.libs.json._
+
 case class Category(id: Option[UUID], uid: UUID, name: String)
 
 class Categories(tag: Tag) extends Table[Category](tag, "categories") {
@@ -23,6 +25,14 @@ class Categories(tag: Tag) extends Table[Category](tag, "categories") {
  */
 object Category {
 	val categories = TableQuery[Categories]
+
+	implicit val categoryWrites = new Writes[Category] {
+	    def writes(category: Category) = Json.obj(
+		    "id" -> category.id,
+		    "uid" -> category.uid,
+		    "name" -> category.name
+		)
+  }
 
 	def create(category: Category) = {
 		val action = categories.map(c => (c.uid, c.name)) += (category.uid, category.name)

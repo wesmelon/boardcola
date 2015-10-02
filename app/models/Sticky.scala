@@ -97,4 +97,5 @@ object Sticky {
 
  		Global.db.run(action)
  	}
+ 	
 }
