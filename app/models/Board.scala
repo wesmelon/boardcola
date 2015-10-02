@@ -1,6 +1,5 @@
 package models
 
-import java.util.UUID
 import java.sql.Timestamp
 import java.util.Calendar
 
@@ -10,11 +9,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.json._
 
-case class Board(id: Option[UUID], cid: UUID, name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
+case class Board(id: Option[Int], cid: Int, name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
 
 class Boards(tag: Tag) extends Table[Board](tag, "boards") {
-	def id = column[UUID]("id", O.PrimaryKey, O.AutoInc)
-	def cid = column[UUID]("category_id")
+	def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+	def cid = column[Int]("category_id")
 	def name = column[String]("name")
 	def creationTime = column[Timestamp]("creation_time")
 	def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
@@ -54,21 +53,21 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
  		result
  	}
 
- 	def findById(id: UUID) : Future[Board] = {
+ 	def findById(id: Int) : Future[Board] = {
  		val query = boards.filter(_.id === id)
 
  		val result : Future[Board] = Global.db.run(query.result.head)
  		result
  	}
 
- 	def findByCid(cid: UUID) : Future[Seq[Board]] = {
+ 	def findByCid(cid: Int) : Future[Seq[Board]] = {
  		val query = boards.filter(_.cid === cid)
 
  		val result : Future[Seq[Board]] = Global.db.run(query.result)
  		result
  	}
 
- 	def updateName(id: UUID, name: String) = {
+ 	def updateName(id: Int, name: String) = {
  		val action = boards.filter(_.id === id)
       .map(b => b.name)
  						   .update(name)
@@ -76,7 +75,7 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
  		Global.db.run(action)
  	}
 
- 	def delete(id: UUID) = {
+ 	def delete(id: Int) = {
  		val action = boards.filter(_.id === id)
       .delete
 

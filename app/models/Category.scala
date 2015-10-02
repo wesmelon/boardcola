@@ -9,10 +9,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.libs.json._
 
-case class Category(id: Option[UUID], uid: UUID, name: String)
+case class Category(id: Option[Int], uid: UUID, name: String)
 
 class Categories(tag: Tag) extends Table[Category](tag, "categories") {
-	def id = column[UUID]("id", O.PrimaryKey, O.AutoInc)
+	def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
 	def uid = column[UUID]("user_id")
 	def name = column[String]("name")
 
@@ -47,7 +47,7 @@ object Category {
 		result
 	}
 
-	def findById(id: UUID) : Future[Category] = {
+	def findById(id: Int) : Future[Category] = {
 		val query = categories.filter(_.id === id)
 						 	  
 		val result : Future[Category] = Global.db.run(query.result.head)
@@ -61,7 +61,7 @@ object Category {
 		result
 	}
 
-	def updateName(id: UUID, name: String) = {
+	def updateName(id: Int, name: String) = {
 		val action = categories.filter(_.id === id)
       .map(c => c.name)
       .update(name)
@@ -69,7 +69,7 @@ object Category {
 		Global.db.run(action)
 	}
 
-	def delete(id: UUID) = {
+	def delete(id: Int) = {
 		val action = categories.filter(_.id === id)
 		  .delete
 
