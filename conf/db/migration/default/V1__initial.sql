@@ -1,7 +1,7 @@
 -- Users, their emails, names and passwords
 CREATE TABLE users
 (
-	uuid TEXT PRIMARY KEY,
+	user_id TEXT PRIMARY KEY,
 	provider_id TEXT NOT NULL,
 	provider_key TEXT NOT NULL,
 	email TEXT UNIQUE NOT NULL,

@@ -18,7 +18,8 @@ import scala.concurrent.Future
  * Mapping of the users in the database to the User case class.
  */
 class Users(tag: Tag) extends Table[User](tag, "users") {
-  def userID = column[UUID]("uuid", O.PrimaryKey)
+  // TODO : Fix the bind from server to db by both using uuid type. Currently, the DB uses TEXT and server uses UUID.
+  def userID = column[UUID]("user_id", O.PrimaryKey)
   def providerID = column[String]("provider_id")
   def providerKey = column[String]("provider_key")
   def email = column[String]("email")

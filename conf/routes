@@ -8,7 +8,13 @@ GET       /                                com.tuplejump.playYeoman.Yeoman.index
 # API
 GET       /api/me                          controllers.Application.user
 
-GET       /api/categories                  controllers.api.CategoryController.getAllCategories
+GET       /api/categories                  controllers.api.CategoryController.getCategories
+POST      /api/categories                  controllers.api.CategoryController.addCategory
+PUT       /api/categories/:id              controllers.api.CategoryController.updateCategory(id: Long)
+DELETE    /api/categories/:id              controllers.api.CategoryController.deleteCategory(id: Long)
+
+POST      /api/categories                  controllers.api.CategoryController.addCategory
+
 GET       /api/boards                      controllers.api.BoardController.getAllBoards
 GET       /api/stickies                    controllers.api.StickyController.getAllStickies
 

@@ -1,12 +1,12 @@
 package controllers
 
 import javax.inject.Inject
+import play.api.i18n.MessagesApi
 
 import play.api._
 import play.api.mvc._
 
 import models.User
-import play.api.i18n.MessagesApi
 import scala.concurrent.Future
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
