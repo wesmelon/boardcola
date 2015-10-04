@@ -4,7 +4,7 @@ import java.util.UUID
 import models.daos.UserDAOImpl
 
 import scala.concurrent.Future
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Category(id: Long, uid: UUID, name: String)

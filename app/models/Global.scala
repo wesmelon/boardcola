@@ -1,7 +1,7 @@
 package models
 
 import java.sql.Timestamp
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._

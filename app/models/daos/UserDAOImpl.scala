@@ -8,7 +8,7 @@ import java.util.UUID
 import java.sql.Timestamp
 import java.util.Calendar
 
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.LoginInfo

@@ -8,7 +8,7 @@ import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import models.daos.PasswordInfoDAO._
 import play.api.libs.concurrent.Execution.Implicits._
 
-import slick.driver.H2Driver.api._
+import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.collection.mutable
