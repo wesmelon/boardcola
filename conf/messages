@@ -3,6 +3,10 @@ user.id = User ID
 email = Email
 password = Password
 
+categories = Categories
+boards = Your Boards
+stickies = Your sticky notes
+
 welcome.signed.in = Welcome!
 sign.up.account = Sign up for a new account
 sign.in.credentials = Sign in

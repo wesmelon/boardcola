@@ -54,10 +54,10 @@ object CategoryDAO {
     result
   }
 
-  def updateName(id: Long, name: String) = {
+  def update(id: Long, cat: Category) = {
     val action = categories.filter(_.id === id)
       .map(c => c.name)
-      .update(name)
+      .update(cat.name)
 
     Global.db.run(action)
   }

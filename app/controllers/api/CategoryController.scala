@@ -72,18 +72,28 @@ class CategoryController @Inject() (
    * @param id 
    * @return HTTP response of a JSON string
    */
-  def updateCategory(id: Long) = Action { implicit request =>
-
-    Ok("todo")
+  def updateCategory(id: Long) = Action(BodyParsers.parse.json) { request =>
+    val catResult = request.body.validate[Category]
+    catResult.fold(
+      errors => {
+        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+      },
+      cat => {
+        println("CategoryDAO trying to update " + cat)
+        CategoryDAO.update(id, cat)
+        Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' updated.") ))
+      }
+    )
   }
 
   /**
-   * Updates a category by its id
+   * Deletes a category by its id
    * @param id 
    * @return Ok response
    */
   def deleteCategory(id: Long) = Action { implicit request =>
-
-    Ok("todo")
+    // TODO: if category does not exist
+    CategoryDAO.delete(id)
+    Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+id+"' deleted.") ))
   }
 }
