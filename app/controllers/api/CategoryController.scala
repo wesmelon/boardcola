@@ -6,9 +6,7 @@ import play.api.i18n.MessagesApi
 import play.api._
 import play.api.mvc._
 
-import models._
-import scala.concurrent.Future
-import scala.util.{Success, Failure}
+import models.{ User, Category, CategoryDAO }
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -53,7 +51,7 @@ class CategoryController @Inject() (
    * Upload a new category through currently logged in user
    * @return HTTP response of a JSON string
    */
-  def addCategory = Action(BodyParsers.parse.json) { request =>
+  def addCategory = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val catResult = request.body.validate[Category]
     catResult.fold(
       errors => {
@@ -72,7 +70,7 @@ class CategoryController @Inject() (
    * @param id 
    * @return HTTP response of a JSON string
    */
-  def updateCategory(id: Long) = Action(BodyParsers.parse.json) { request =>
+  def updateCategory(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val catResult = request.body.validate[Category]
     catResult.fold(
       errors => {
@@ -91,7 +89,7 @@ class CategoryController @Inject() (
    * @param id 
    * @return Ok response
    */
-  def deleteCategory(id: Long) = Action { implicit request =>
+  def deleteCategory(id: Long) = SecuredAction { implicit request =>
     // TODO: if category does not exist
     CategoryDAO.delete(id)
     Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+id+"' deleted.") ))
