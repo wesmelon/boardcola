@@ -5,7 +5,7 @@
 /**
  * The home controller.
  */
-app.controller('HomeCtrl', ['$rootScope', '$scope', 'Account', function($rootScope, $scope, Account) {
+app.controller('HomeCtrl', ['$rootScope', '$scope', 'Account', 'Category', function($rootScope, $scope, Account, Category) {
 
   /**
    * Initializes the controller.
@@ -18,5 +18,7 @@ app.controller('HomeCtrl', ['$rootScope', '$scope', 'Account', function($rootSco
       .error(function(error) {
 
       });
+
+    $rootScope.categories = Category.query();
   };
 }]);
