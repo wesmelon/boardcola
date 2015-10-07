@@ -5,7 +5,7 @@
     <div class="center-form panel">
       <div class="panel-body">
         
-        <div class="row" ng-controller="HomeCtrl">
+        <div class="row" ng-controller="ListCtrl">
           <hr class="col-md-12" />
           <h4 class="col-md-8">@Messages("welcome.signed.in")</h4>
           <hr class="col-md-12" />
@@ -13,13 +13,17 @@
         <div class="row data">
           <div class="col-md-12">
             <div class="row">
-              <p class="col-md-6"><strong>@Messages("username"):</strong></p><p class="col-md-6">{{user.username ? user.username : 'None'}}</p>
+              <p class="col-md-6"><strong>@Messages("categories"):</strong></p><p class="col-md-6">{{categories}}</p>
             </div>
+          </div>
+          <div class="col-md-12">
             <div class="row">
-              <p class="col-md-6"><strong>@Messages("email"):</strong></p><p class="col-md-6">{{user.email ? user.email : 'None'}}</p>
+              <p class="col-md-6"><strong>@Messages("boards"):</strong></p><p class="col-md-6">{{boards}}</p>
             </div>
+          </div>
+          <div class="col-md-12">
             <div class="row">
-              <p class="col-md-6"><strong>@Messages("user.id"):</strong></p><p class="col-md-6">{{user.id}}</p>
+              <p class="col-md-6"><strong>@Messages("stickies"):</strong></p><p class="col-md-6">{{stickies}}</p>
             </div>
           </div>
         </div>

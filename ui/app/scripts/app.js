@@ -32,6 +32,13 @@ function config($urlRouterProvider, $stateProvider, $httpProvider, $authProvider
         loginRequired: loginRequired 
       }
     })
+    .state('list', { 
+      url: '/list', 
+      templateUrl: '/views/list.html', 
+      resolve: {
+        loginRequired: loginRequired 
+      }
+    })
     .state('signup', { 
       url: '/signup', 
       templateUrl: '/views/signup.html',

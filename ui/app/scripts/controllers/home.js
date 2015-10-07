@@ -5,21 +5,19 @@
     .module('boardcola')
     .controller('HomeCtrl', HomeCtrl);
 
-  HomeCtrl.$inject = ['$rootScope', '$scope', 'category', 'account'];
+  HomeCtrl.$inject = ['$rootScope', '$scope', 'account'];
 
   /**
    * The home controller.
    */
-  function HomeCtrl($rootScope, $scope, category, account) {
+  function HomeCtrl($rootScope, $scope, account) {
     var vm = $rootScope;
     vm.user = [];
-    vm.categories = [];
 
     activate();
 
     function activate() {
       getProfile();
-      getCategories();
     }
 
     function getProfile() {
@@ -29,14 +27,5 @@
           return vm.user;
         });
     }
-
-    function getCategories() {
-      return category.getCategories()
-        .then(function(data) {
-          vm.categories = data;
-          return vm.categories;
-        });
-    }
-
   };
 })();

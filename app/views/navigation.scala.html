@@ -16,7 +16,7 @@
         <ul class="nav navbar-nav">
           <!-- User is logged in -->
           <li ng-if="isAuthenticated()"><a ui-sref="home">@Messages("home")</a></li>
-          <li ng-if="isAuthenticated()"><a ui-sref="board">@Messages("boards")</a></li>
+          <li ng-if="isAuthenticated()"><a ui-sref="list">@Messages("boards")</a></li>
           
           <!-- User is logged out -->
           <li ng-if="!isAuthenticated()"><a ui-sref="login">@Messages("home")</a></li>
