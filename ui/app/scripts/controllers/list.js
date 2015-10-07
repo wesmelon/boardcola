@@ -25,27 +25,21 @@
     }
 
     function getCategories() {
-      return category.getCategories()
-        .then(function(data) {
-          vm.categories = data;
-          return vm.categories;
-        });
+      category.query(function(data) {
+        vm.categories = data;
+      });
     }
 
     function getBoards() {
-      return board.getBoards()
-        .then(function(data) {
-          vm.boards = data;
-          return vm.boards;
-        });
+      board.query({cid: 5}, function(data) {
+        vm.boards = data;
+      });
     }
 
     function getStickies() {
-      return sticky.getStickies()
-        .then(function(data) {
-          vm.stickies = data;
-          return vm.stickies;
-        });
+      sticky.query({bid: 2}, function(data) {
+        vm.stickies = data;
+      });
     }
   };
 })();

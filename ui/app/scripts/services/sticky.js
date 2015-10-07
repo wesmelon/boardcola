@@ -5,28 +5,12 @@
     .module('boardcola')
     .factory('sticky', sticky);
 
-  sticky.$inject = ['$http'];
+  sticky.$inject = ['$resource'];
 
   /**
    * The sticky factory.
    */
-  function sticky($http) {
-    return {
-      getStickies: getStickies
-    };
-
-    function getStickies() {
-      return $http.get('api/stickies/2')
-        .then(getStickiesSuccess)
-        .catch(getStickiesFailed);
-
-      function getStickiesSuccess(response) {
-        return response.data;
-      }
-
-      function getStickiesFailed(error) {
-        console.log('XHR failed for getBoards.' + error.data);
-      }
-    }
+  function sticky($resource) {
+    return $resource('api/stickies/:bid')
   };
 })();
