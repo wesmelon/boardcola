@@ -61,6 +61,16 @@ class StickyController @Inject() (
   }
 
   /**
+   * Gets stickies by sticky id
+   * @return HTTP response of a JSON string
+   */
+  def getSticky(id: Long) = SecuredAction.async { implicit request =>
+    val f = StickyDAO.findById(id)
+
+    f.map(s => Ok(Json.toJson(s)))
+  }
+
+  /**
    * Upload a new sticky through currently logged in user
    * @return HTTP response of a JSON string
    */

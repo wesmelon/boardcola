@@ -31,13 +31,13 @@
     }
 
     function getBoards() {
-      board.query({cid: 5}, function(data) {
+      board.get({id: 1}, function(data) {
         vm.boards = data;
       });
     }
 
     function getStickies() {
-      sticky.query({bid: 2}, function(data) {
+      sticky.get({id: 1}, function(data) {
         vm.stickies = data;
       });
     }

@@ -3,35 +3,37 @@
 # ~~~~
 
 # Home page
-GET       /                                com.tuplejump.playYeoman.Yeoman.index
+GET       /                                 com.tuplejump.playYeoman.Yeoman.index
 
 # API
-GET       /api/me                          controllers.Application.user
+GET       /api/me                           controllers.Application.user
 
-GET       /api/categories                  controllers.api.CategoryController.getCategories
-POST      /api/categories                  controllers.api.CategoryController.addCategory
-PUT       /api/categories/:id              controllers.api.CategoryController.updateCategory(id: Long)
-DELETE    /api/categories/:id              controllers.api.CategoryController.deleteCategory(id: Long)
+GET       /api/categories                   controllers.api.CategoryController.getCategories
+POST      /api/categories                   controllers.api.CategoryController.addCategory
+PUT       /api/categories/:id               controllers.api.CategoryController.updateCategory(id: Long)
+DELETE    /api/categories/:id               controllers.api.CategoryController.deleteCategory(id: Long)
 
-GET       /api/boards/:cid                 controllers.api.BoardController.getBoards(cid: Long)
-POST      /api/boards                      controllers.api.BoardController.addBoard
-PUT       /api/boards/:id                  controllers.api.BoardController.updateBoard(id: Long)
-DELETE    /api/boards/:id                  controllers.api.BoardController.deleteBoard(id: Long)
+GET       /api/boards/c/:cid                controllers.api.BoardController.getBoards(cid: Long)
+GET       /api/boards/:id                   controllers.api.BoardController.getBoard(id: Long)
+POST      /api/boards                       controllers.api.BoardController.addBoard
+PUT       /api/boards/:id                   controllers.api.BoardController.updateBoard(id: Long)
+DELETE    /api/boards/:id                   controllers.api.BoardController.deleteBoard(id: Long)
 
-GET       /api/stickies/:bid               controllers.api.StickyController.getStickies(bid: Long)
-POST      /api/stickies                    controllers.api.StickyController.addSticky
-PUT       /api/stickies/:id                controllers.api.StickyController.updateSticky(id: Long)
-DELETE    /api/stickies/:id                controllers.api.StickyController.deleteSticky(id: Long)
+GET       /api/stickies/b/:bid              controllers.api.StickyController.getStickies(bid: Long)
+GET       /api/stickies/:id                controllers.api.StickyController.getSticky(id: Long)
+POST      /api/stickies                     controllers.api.StickyController.addSticky
+PUT       /api/stickies/:id                 controllers.api.StickyController.updateSticky(id: Long)
+DELETE    /api/stickies/:id                 controllers.api.StickyController.deleteSticky(id: Long)
 
 # Authentication
-POST      /auth/signup                     controllers.auth.SignUp.signUp
-POST      /auth/login                      controllers.auth.CredentialsAuth.authenticate
-GET       /auth/logout                     controllers.Application.signOut
+POST      /auth/signup                      controllers.auth.SignUp.signUp
+POST      /auth/login                       controllers.auth.CredentialsAuth.authenticate
+GET       /auth/logout                      controllers.Application.signOut
 
 # Dynamic part of the url
-GET       /views/$template<.+>.html        controllers.Application.view(template)
+GET       /views/$template<.+>.html         controllers.Application.view(template)
 
 # Map static resources from the /public folder to the /assets URL path
 GET       /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
 
-->        /                               yeoman.Routes
+->        /                                 yeoman.Routes

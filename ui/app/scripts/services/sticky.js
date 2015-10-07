@@ -11,6 +11,6 @@
    * The sticky factory.
    */
   function sticky($resource) {
-    return $resource('api/stickies/:bid')
+    return $resource('api/stickies/:id')
   };
 })();

@@ -55,6 +55,16 @@ class BoardController @Inject() (
   }
 
   /**
+   * Gets boards by board id
+   * @return HTTP response of a JSON string
+   */
+  def getBoard(id: Long) = SecuredAction.async { implicit request =>
+    val f = BoardDAO.findById(id)
+
+    f.map(s => Ok(Json.toJson(s)))
+  }
+
+  /**
    * Upload a new board through currently logged in user
    * @return HTTP response of a JSON string
    */
