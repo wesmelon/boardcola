@@ -51,6 +51,7 @@ class Application @Inject() (
       case "login" => Ok(views.html.login(socialProviderRegistry))
       case "navigation" => Ok(views.html.navigation())
       case "list" => Ok(views.html.list())
+      case "board" => Ok(views.html.board())
       case _ => NotFound
     }
   }

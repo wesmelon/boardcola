@@ -5,23 +5,31 @@
     .module('boardcola')
     .controller('ListCtrl', ListCtrl);
 
-  ListCtrl.$inject = ['$rootScope', '$scope', 'category', 'board', 'sticky'];
+  ListCtrl.$inject = ['$rootScope', 'account', 'category', 'boardsServices'];
 
   /**
    * The home controller.
    */
-  function ListCtrl($rootScope, $scope, category, board, sticky) {
+  function ListCtrl($rootScope, account, category, boardsServices) {
     var vm = $rootScope;
     vm.categories = [];
     vm.boards = [];
-    vm.stickies = [];
 
     activate();
 
     function activate() {
-      getCategories();
-      getBoards();
-      getStickies();
+      getUserId().then(function(userId) {
+        getCategories();
+        getBoards(userId);
+      });
+    }
+
+    function getUserId() {
+      return account.getProfile()
+        .then(function(data) {
+          vm.user = data;
+          return data.id;
+        });
     }
 
     function getCategories() {
@@ -30,15 +38,9 @@
       });
     }
 
-    function getBoards() {
-      board.get({id: 1}, function(data) {
+    function getBoards(userId) {
+      boardsServices.query({uid: userId}, function(data) {
         vm.boards = data;
-      });
-    }
-
-    function getStickies() {
-      sticky.get({id: 1}, function(data) {
-        vm.stickies = data;
       });
     }
   };

@@ -3,14 +3,14 @@
 
   angular
     .module('boardcola')
-    .factory('board', board);
+    .factory('boardServices', boardServices);
 
-  board.$inject = ['$resource'];
+  boardServices.$inject = ['$resource'];
 
   /**
    * The board factory.
    */
-  function board($resource) {
+  function boardServices($resource) {
     return $resource('api/boards/:id')
   };
 })();

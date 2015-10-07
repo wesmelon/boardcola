@@ -39,6 +39,13 @@ function config($urlRouterProvider, $stateProvider, $httpProvider, $authProvider
         loginRequired: loginRequired 
       }
     })
+    .state('board', { 
+      url: '/board/:bid',
+      templateUrl: '/views/board.html', 
+      resolve: {
+        loginRequired: loginRequired 
+      }
+    })
     .state('signup', { 
       url: '/signup', 
       templateUrl: '/views/signup.html',

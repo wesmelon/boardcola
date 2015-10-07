@@ -1,5 +1,8 @@
 package models
 
+import java.util.UUID
+import models.daos.UserDAOImpl
+
 import java.sql.Timestamp
 import java.util.Calendar
 
@@ -10,17 +13,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class Board(id: Long, cid: Long, name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
+case class Board(id: Long, uid: UUID, cid: Option[Long], name: String, creationTime: Timestamp, lastModified: Option[Timestamp])
 
 class Boards(tag: Tag) extends Table[Board](tag, "boards") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def cid = column[Long]("category_id")
+  def uid = column[UUID]("user_id")
+  def cid = column[Option[Long]]("category_id")
   def name = column[String]("name")
   def creationTime = column[Timestamp]("creation_time")
   def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
 
-  def * = (id, cid, name, creationTime, lastModified) <> (Board.tupled, Board.unapply)
-  def category = foreignKey("c_fk", cid, CategoryDAO.categories)(_.id, onDelete=ForeignKeyAction.Cascade)
+  def * = (id, uid, cid, name, creationTime, lastModified) <> (Board.tupled, Board.unapply)
+  def user = foreignKey("u_fk", uid, UserDAOImpl.users)(_.userID, onDelete=ForeignKeyAction.Cascade)
 }
 
 /*
@@ -48,6 +52,13 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
     val query = boards.filter(_.id === id)
 
     val result : Future[Board] = Global.db.run(query.result.head)
+    result
+  }
+
+  def findByUid(uid: UUID): Future[Seq[Board]] = {
+    val query = boards.filter(_.uid === uid)
+
+    val result : Future[Seq[Board]] = Global.db.run(query.result)
     result
   }
 

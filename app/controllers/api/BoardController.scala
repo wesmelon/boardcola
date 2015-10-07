@@ -12,6 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 
+import java.util.UUID
 import java.sql.Timestamp
 
 import play.api.libs.json._
@@ -29,6 +30,7 @@ class BoardController @Inject() (
   implicit val WriteBoard = new Writes[Board] {
       def writes(board: Board) = Json.obj(
         "id" -> board.id,
+        "uid" -> board.uid,
         "cid" -> board.cid,
         "name" -> board.name,
         "creationTime" -> board.creationTime,
@@ -38,17 +40,28 @@ class BoardController @Inject() (
 
   implicit val ReadBoard: Reads[Board] = (
     (JsPath \ "id").read[Long] and
-    (JsPath \ "cid").read[Long] and
+    (JsPath \ "uid").read[UUID] and
+    (JsPath \ "cid").readNullable[Long] and
     (JsPath \ "name").read[String] and
-    (JsPath \ "name").read[Timestamp] and
-    (JsPath \ "name").readNullable[Timestamp]
+    (JsPath \ "creationTime").read[Timestamp] and
+    (JsPath \ "lastModified").readNullable[Timestamp]
   )(Board.apply _)
+
+ /**
+   * Gets boards by user id
+   * @return HTTP response of a JSON string
+   */
+  def getBoardsByUser(uid: UUID) = SecuredAction.async { implicit request =>
+    val f = BoardDAO.findByUid(uid)
+
+    f.map(s => Ok(Json.toJson(s)))
+  }
 
   /**
    * Gets boards by category id
    * @return HTTP response of a JSON string
    */
-  def getBoards(cid: Long) = SecuredAction.async { implicit request =>
+  def getBoardsByCat(cid: Long) = SecuredAction.async { implicit request =>
     val f = BoardDAO.findByCid(cid)
 
     f.map(s => Ok(Json.toJson(s)))

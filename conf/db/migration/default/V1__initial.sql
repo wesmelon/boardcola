@@ -31,7 +31,8 @@ CREATE TABLE categories
 CREATE TABLE boards
 (
 	id SERIAL PRIMARY KEY,
-	category_id INT REFERENCES categories,
+	user_id UUID REFERENCES users,
+	category_id INT,
 	name TEXT NOT NULL,
 	creation_time TIMESTAMP NOT NULL,
 	last_modified TIMESTAMP	
