@@ -8,12 +8,22 @@
  *
  * Main module of the application.
  */
-var app = angular
-  .module('boardcola', ['ngResource', 'ngMessages', 'ngAnimate', 'ngCookies', 'ui.router', 'satellizer', 'toastr']);
+angular
+  .module('boardcola', [
+    'ngResource', 
+    'ngMessages', 
+    'ngAnimate', 
+    'ngCookies', 
+    'ui.router', 
+    'satellizer', 
+    'toastr'
+  ]);
 
-app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authProvider) {
-  
+angular
+    .module('boardcola')
+    .config(config);
 
+function config($urlRouterProvider, $stateProvider, $httpProvider, $authProvider) {
   $stateProvider
     .state('home', { 
       url: '/', 
@@ -98,4 +108,4 @@ app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authPro
 
     return deferred.promise;
   }
-});
+};

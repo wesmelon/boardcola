@@ -1,24 +1,42 @@
-'use strict';
+(function() {
+  'use strict';
 
-/*global app: false */
+  angular
+    .module('boardcola')
+    .controller('HomeCtrl', HomeCtrl);
 
-/**
- * The home controller.
- */
-app.controller('HomeCtrl', ['$rootScope', '$scope', 'Account', 'Category', function($rootScope, $scope, Account, Category) {
+  HomeCtrl.$inject = ['$rootScope', '$scope', 'category', 'account'];
 
   /**
-   * Initializes the controller.
+   * The home controller.
    */
-  $scope.init = function() {
-    Account.getProfile()
-      .success(function(data) {
-        $rootScope.user = data;
-      })
-      .error(function(error) {
+  function HomeCtrl($rootScope, $scope, category, account) {
+    var vm = $rootScope;
+    vm.user = [];
+    vm.categories = [];
 
-      });
+    activate();
 
-    $rootScope.categories = Category.query();
+    function activate() {
+      getProfile();
+      getCategories();
+    }
+
+    function getProfile() {
+      return account.getProfile()
+        .then(function(data) {
+          vm.user = data;
+          return vm.user;
+        });
+    }
+
+    function getCategories() {
+      return category.getCategories()
+        .then(function(data) {
+          vm.categories = data;
+          return vm.categories;
+        });
+    }
+
   };
-}]);
+})();

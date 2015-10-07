@@ -1,18 +1,24 @@
-'use strict';
+(function() {
+  'use strict';
 
-/*global app: false */
+  angular
+    .module('boardcola')
+    .controller('NavigationCtrl', NavigationCtrl);
 
-/**
- * The navigation controller.
- */
-app.controller('NavigationCtrl', function($scope, $auth) {
+  NavigationCtrl.$inject = ['$scope', '$auth'];
 
   /**
-   * Indicates if the user is authenticated or not.
-   *
-   * @returns {boolean} True if the user is authenticated, false otherwise.
+   * The navigation controller.
    */
-  $scope.isAuthenticated = function() {
-    return $auth.isAuthenticated();
+  function NavigationCtrl($scope, $auth) {
+
+    /**
+     * Indicates if the user is authenticated or not.
+     *
+     * @returns {boolean} True if the user is authenticated, false otherwise.
+     */
+    $scope.isAuthenticated = function() {
+      return $auth.isAuthenticated();
+    };
   };
-});
+})();

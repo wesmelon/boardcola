@@ -1,16 +1,22 @@
-'use strict';
+(function() {
+  'use strict';
 
-/*global app: false */
+  angular
+    .module('boardcola')
+    .controller('LogoutCtrl', LogoutCtrl);
 
-/**
- * The logout controller.
- */
-app.controller('LogoutCtrl', function($auth, $location, toastr) {
-  if (!$auth.isAuthenticated()) { return; }
+  LogoutCtrl.$inject = ['$auth', '$location', 'toastr'];
 
-  $auth.logout()
-    .then(function() {
-      toastr.info('You have been logged out');
-      $location.path('/login');
-    });
-});
+  /**
+   * The logout controller.
+   */
+  function LogoutCtrl($auth, $location, toastr) {
+    if (!$auth.isAuthenticated()) { return; }
+
+    $auth.logout()
+      .then(function() {
+        toastr.info('You have been logged out');
+        $location.path('/login');
+      });
+  };
+})();

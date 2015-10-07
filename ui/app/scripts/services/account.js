@@ -1,14 +1,32 @@
-'use strict';
+(function() {
+  'use strict';
 
-/*global app: false */
+  angular
+    .module('boardcola')
+    .factory('account', account);
 
-/**
- * The user factory.
- */
-app.factory('Account', function($http) {
-  return {
-    getProfile: function() {
-      return $http.get('/api/me');
+  account.$inject = ['$http'];
+
+  /**
+   * The user factory.
+   */
+  function account($http) {
+    return {
+      getProfile: getProfile
+    };
+
+    function getProfile() {
+      return $http.get('api/me')
+        .then(getMeSuccess)
+        .catch(getMeFailed);
+
+      function getMeSuccess(response) {
+        return response.data;
+      }
+
+      function getMeFailed(error) {
+        console.log('XHR failed for getProfile.' + error.data);
+      }
     }
   };
-});
+})();
