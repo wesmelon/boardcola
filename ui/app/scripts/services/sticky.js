@@ -16,7 +16,7 @@
     };
 
     function getStickies() {
-      return $http.get('api/stickies/1')
+      return $http.get('api/stickies/2')
         .then(getStickiesSuccess)
         .catch(getStickiesFailed);
 
