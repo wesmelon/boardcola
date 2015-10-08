@@ -34,20 +34,20 @@ class StickyController @Inject() (
         "content" -> sticky.content,
         "x" -> sticky.xPos,
         "y" -> sticky.yPos,
-        "creationTime" -> sticky.creationTime,
-        "lastModified" -> sticky.lastModified
+        "creation_time" -> sticky.creationTime,
+        "last_modified" -> sticky.lastModified
     )
   }
 
   implicit val ReadSticky: Reads[Sticky] = (
-    (JsPath \ "id").read[Long] and
+    (JsPath \ "id").readNullable[Long] and
     (JsPath \ "bid").read[Long] and
     (JsPath \ "name").readNullable[String] and
     (JsPath \ "content").read[String] and
     (JsPath \ "x").readNullable[Int] and
     (JsPath \ "y").readNullable[Int] and
-    (JsPath \ "creationTime").read[Timestamp] and
-    (JsPath \ "lastModified").readNullable[Timestamp]
+    (JsPath \ "creation_time").readNullable[Timestamp] and
+    (JsPath \ "last_modified").readNullable[Timestamp]
   )(Sticky.apply _)
     
   /**
@@ -74,7 +74,7 @@ class StickyController @Inject() (
    * Upload a new sticky through currently logged in user
    * @return HTTP response of a JSON string
    */
-  def addSticky = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def addSticky = Action(BodyParsers.parse.json) { request =>
     val stickyResult = request.body.validate[Sticky]
     stickyResult.fold(
       errors => {

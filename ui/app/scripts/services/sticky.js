@@ -3,14 +3,14 @@
 
   angular
     .module('boardcola')
-    .factory('sticky', sticky);
+    .factory('stickyService', stickyService);
 
-  sticky.$inject = ['$resource'];
+  stickyService.$inject = ['$resource'];
 
   /**
    * The sticky factory.
    */
-  function sticky($resource) {
+  function stickyService($resource) {
     return $resource('api/stickies/:id')
   };
 })();

@@ -7,14 +7,14 @@ import scala.concurrent.Future
 import slick.driver.PostgresDriver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-case class Category(id: Long, uid: UUID, name: String)
+case class Category(id: Option[Long], uid: UUID, name: String)
 
 class Categories(tag: Tag) extends Table[Category](tag, "categories") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def uid = column[UUID]("user_id")
   def name = column[String]("name")
 
-  def * = (id, uid, name) <> (Category.tupled, Category.unapply)
+  def * = (id.?, uid, name) <> (Category.tupled, Category.unapply)
   def user = foreignKey("u_fk", uid, UserDAOImpl.users)(_.userID, onDelete=ForeignKeyAction.Cascade)
 }
 

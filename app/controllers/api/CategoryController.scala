@@ -32,7 +32,7 @@ class CategoryController @Inject() (
   }
 
   implicit val categoryReads: Reads[Category] = (
-    (JsPath \ "id").read[Long] and
+    (JsPath \ "id").readNullable[Long] and
     (JsPath \ "uid").read[UUID] and
     (JsPath \ "name").read[String]
   )(Category.apply _)

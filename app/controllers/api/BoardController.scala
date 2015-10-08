@@ -33,18 +33,18 @@ class BoardController @Inject() (
         "uid" -> board.uid,
         "cid" -> board.cid,
         "name" -> board.name,
-        "creationTime" -> board.creationTime,
-        "lastModified" -> board.lastModified
+        "creation_time" -> board.creationTime,
+        "last_modified" -> board.lastModified
     )
   }
 
   implicit val ReadBoard: Reads[Board] = (
-    (JsPath \ "id").read[Long] and
+    (JsPath \ "id").readNullable[Long] and
     (JsPath \ "uid").read[UUID] and
     (JsPath \ "cid").readNullable[Long] and
     (JsPath \ "name").read[String] and
-    (JsPath \ "creationTime").read[Timestamp] and
-    (JsPath \ "lastModified").readNullable[Timestamp]
+    (JsPath \ "creation_time").readNullable[Timestamp] and
+    (JsPath \ "last_modified").readNullable[Timestamp]
   )(Board.apply _)
 
  /**
