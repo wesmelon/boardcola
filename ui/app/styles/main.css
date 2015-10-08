@@ -87,8 +87,21 @@ ul {
   border-radius: 0;
 }
 
+.little-note {
+  border-style: dotted;
+  border-width: 1px;
+  width: 200px;
+  height: 100px;
+  margin: 1% auto;
+}
+
 .center-form {
   width: 330px;
+  margin: 12% auto;
+}
+
+.big-center-form {
+  width: 1000px;
   margin: 12% auto;
 }
 
