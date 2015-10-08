@@ -35,6 +35,6 @@ GET       /auth/logout                      controllers.Application.signOut
 GET       /views/$template<.+>.html         controllers.Application.view(template)
 
 # Map static resources from the /public folder to the /assets URL path
-GET       /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
+GET       /assets/*file                     controllers.Assets.versioned(path="/public", file: Asset)
 
 ->        /                                 yeoman.Routes
