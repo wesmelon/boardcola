@@ -10,17 +10,16 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand">boardcola</a>
+        <a class="navbar-brand" ui-sref="home">boardcola</a>
       </div>
       <div class="collapse navbar-collapse" ng-class="{ in: !navCollapsed }" ng-click="navCollapsed = !navCollapsed">
         <ul class="nav navbar-nav">
           <!-- User is logged in -->
-          <li ng-if="isAuthenticated()"><a ui-sref="home">@Messages("home")</a></li>
           <li ng-if="isAuthenticated()"><a ui-sref="list">@Messages("boards")</a></li>
+          <li ng-if="isAuthenticated()"><a ui-sref="list">@Messages("clubs")</a></li>
+          <li ng-if="isAuthenticated()"><a ui-sref="list">@Messages("showcase")</a></li>
           
           <!-- User is logged out -->
-          <li ng-if="!isAuthenticated()"><a ui-sref="login">@Messages("home")</a></li>
-
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <!-- User is logged in -->

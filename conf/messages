@@ -4,8 +4,10 @@ email = Email
 password = Password
 
 categories = Categories
-boards = Your Boards
+boards = Boards
 stickies = Your sticky notes
+clubs = Clubs
+showcase = Showcase
 
 welcome.signed.in = Welcome!
 sign.up.account = Sign up for a new account

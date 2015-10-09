@@ -6,15 +6,14 @@
       <div class="panel-body" ng-controller="ListCtrl as list">
 
         <div class="row">
-
+          <hr class="col-md-12" />
           <div class="col-md-12">
-            <hr class="col-md-12" />
             <h4 class="col-md-8">@Messages("boards"):</h4>
             <form ng-submit="list.addBoard()">
               <input type="text" class="col-md-8 form-control" ng-model="list.name" name="text" placeholder="+ add new board" />
             </form>
-            <hr class="col-md-12" />
           </div>
+          <hr class="col-md-12" />
         </div>
 
         
@@ -32,11 +31,11 @@
         </div>
 
         <div class="row">
-            <div class="col-md-12">
-            <hr class="col-md-12" />
-              <input class="col-md-8 form-control" ng-model="search" placeholder="search your boards" />
-            <hr class="col-md-12" />
+          <hr class="col-md-12" />
+          <div class="col-md-12">
+            <input class="col-md-8 form-control" ng-model="search" placeholder="search your boards" />
           </div>
+          <hr class="col-md-12" />
         </div>
 
         <div class="row data">
