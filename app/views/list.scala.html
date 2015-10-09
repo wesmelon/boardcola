@@ -3,7 +3,11 @@
 <div class="container">
   <div class="row">
     <div class="center-form panel">
-      <div class="panel-body" ng-controller="ListCtrl">
+      <div class="panel-body" ng-controller="ListCtrl as list">
+
+        <form ng-submit="list.addBoard()">
+          <input type="text" class="form-control" ng-model="list.name" name="text" placeholder="new board name" />
+        </form>
         
         <div class="row">
           <hr class="col-md-12" />
@@ -12,7 +16,7 @@
         </div>
         <div class="row data">
           <div class="col-md-12">
-            <div class="row" ng-repeat="category in categories">
+            <div class="row" ng-repeat="category in list.categories">
               <p class="col-md-8">{{category.name}}</p><p class="col-md-4">settings</p>
             </div>
           </div>
@@ -25,7 +29,7 @@
         </div>
         <div class="row data">
           <div class="col-md-12">
-            <div class="row" ng-repeat="board in boards">
+            <div class="row" ng-repeat="board in list.boards">
               <p class="col-md-8"><a ui-sref="board({bid: board.id})">{{board.name}}</a></p><p class="col-md-4"></p>
             </div>
           </div>

@@ -11,6 +11,6 @@
    * The board factory.
    */
   function boardsServices($resource) {
-    return $resource('api/boards/u/:uid')
+    return $resource('api/boards/:id');
   };
 })();

@@ -71,7 +71,6 @@ class SignUp @Inject() (
       }
     }.recoverTotal {
       case error =>
-      println(error)
         Future.successful(Unauthorized(Json.obj("message" -> Messages("invalid.data"))))
     }
   }

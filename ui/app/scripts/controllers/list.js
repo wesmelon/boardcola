@@ -5,30 +5,32 @@
     .module('boardcola')
     .controller('ListCtrl', ListCtrl);
 
-  ListCtrl.$inject = ['$rootScope', 'account', 'category', 'boardsServices'];
+  ListCtrl.$inject = ['account', 'category', 'boardsServices'];
 
   /**
-   * The home controller.
+   * The list controller.
    */
-  function ListCtrl($rootScope, account, category, boardsServices) {
-    var vm = $rootScope;
+  function ListCtrl(account, category, boardsServices) {
+    var vm = this;
     vm.categories = [];
     vm.boards = [];
+    vm.addBoard = addBoard;
+    vm.name = '';
 
     activate();
 
     function activate() {
-      getUserId().then(function(userId) {
-        getCategories();
-        getBoards(userId);
+      getProfile().then(function(data) {
+        vm.user = data;
       });
+      getCategories();
+      getBoards();
     }
 
-    function getUserId() {
+    function getProfile() {
       return account.getProfile()
         .then(function(data) {
-          vm.user = data;
-          return data.id;
+          return data;
         });
     }
 
@@ -38,10 +40,25 @@
       });
     }
 
-    function getBoards(userId) {
-      boardsServices.query({uid: userId}, function(data) {
+    function getBoards() {
+      boardsServices.query(function(data) {
         vm.boards = data;
       });
+    }
+
+    function addBoard() {
+      var newBoard = new boardsServices({
+        name: vm.name
+      });
+
+      vm.name = '';
+      newBoard.$save()
+        .then(function(success) { 
+          getBoards(); 
+        })
+        .catch(function(error) { 
+          console.log(error); 
+        });
     }
   };
 })();

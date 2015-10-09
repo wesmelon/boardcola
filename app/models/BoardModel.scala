@@ -15,7 +15,7 @@ import play.api.libs.functional.syntax._
 
 case class Board(
   id: Option[Long], 
-  uid: UUID, 
+  uid: Option[UUID], 
   cid: Option[Long], 
   name: String, 
   creationTime: Option[Timestamp], 
@@ -23,14 +23,14 @@ case class Board(
 
 class Boards(tag: Tag) extends Table[Board](tag, "boards") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def uid = column[UUID]("user_id")
+  def uid = column[Option[UUID]]("user_id")
   def cid = column[Option[Long]]("category_id")
   def name = column[String]("name")
   def creationTime = column[Option[Timestamp]]("creation_time")
   def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
 
   def * = (id.?, uid, cid, name, creationTime, lastModified) <> (Board.tupled, Board.unapply)
-  def user = foreignKey("u_fk", uid, UserDAOImpl.users)(_.userID, onDelete=ForeignKeyAction.Cascade)
+  def user = foreignKey("u_fk", uid, UserDAOImpl.users)(_.userID.?, onDelete=ForeignKeyAction.Cascade)
 }
 
 /*
@@ -42,7 +42,7 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
   def create(board: Board) = {
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
-    val action = boards.map(b => (b.cid, b.name, b.creationTime)) += (board.cid, board.name, Some(new Timestamp(now.getTime())))
+    val action = boards.map(b => (b.uid, b.cid, b.name, b.creationTime)) += (board.uid, board.cid, board.name, Some(new Timestamp(now.getTime())))
 
     Global.db.run(action)
   }

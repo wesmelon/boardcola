@@ -11,6 +11,6 @@
    * The sticky factory.
    */
   function stickyService($resource) {
-    return $resource('api/stickies/:id')
+    return $resource('api/stickies/:id');
   };
 })();

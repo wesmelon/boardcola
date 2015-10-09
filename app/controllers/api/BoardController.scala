@@ -40,7 +40,7 @@ class BoardController @Inject() (
 
   implicit val ReadBoard: Reads[Board] = (
     (JsPath \ "id").readNullable[Long] and
-    (JsPath \ "uid").read[UUID] and
+    (JsPath \ "uid").readNullable[UUID] and
     (JsPath \ "cid").readNullable[Long] and
     (JsPath \ "name").read[String] and
     (JsPath \ "creation_time").readNullable[Timestamp] and
@@ -48,11 +48,11 @@ class BoardController @Inject() (
   )(Board.apply _)
 
  /**
-   * Gets boards by user id
+   * Gets boards by currently logged in user
    * @return HTTP response of a JSON string
    */
-  def getBoardsByUser(uid: UUID) = SecuredAction.async { implicit request =>
-    val f = BoardDAO.findByUid(uid)
+  def getBoards = SecuredAction.async { implicit request =>
+    val f = BoardDAO.findByUid(request.identity.userID)
 
     f.map(s => Ok(Json.toJson(s)))
   }
@@ -89,7 +89,7 @@ class BoardController @Inject() (
       },
       board => {
         println("BoardDAO trying to save " + board)
-        BoardDAO.create(board)
+        BoardDAO.create(board.copy(uid=Some(request.identity.userID)))
         Ok(Json.obj("status" -> "OK", "message" -> ("Board '"+board+"' saved.") ))
       }
     )

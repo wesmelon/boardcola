@@ -99,7 +99,7 @@ object UserDAOImpl {
   }
 
   def findByProviderIdAndKey(id: String, key: String) : Future[Option[User]] = {
-    println("finding " + id + " " + key)
+    //println("finding " + id + " " + key)
     val query = users.filter(u => u.providerID === id && u.providerKey === key)
     
     val result : Future[Option[User]] = Global.db.run(query.result.headOption)

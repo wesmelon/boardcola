@@ -74,7 +74,7 @@ class StickyController @Inject() (
    * Upload a new sticky through currently logged in user
    * @return HTTP response of a JSON string
    */
-  def addSticky = Action(BodyParsers.parse.json) { request =>
+  def addSticky = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val stickyResult = request.body.validate[Sticky]
     stickyResult.fold(
       errors => {

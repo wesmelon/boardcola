@@ -11,6 +11,6 @@
    * The category factory.
    */
   function category($resource) {
-    return $resource('api/categories')
+    return $resource('api/categories');
   };
 })();

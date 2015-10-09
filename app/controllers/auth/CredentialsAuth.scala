@@ -63,7 +63,6 @@ class CredentialsAuth @Inject() (
    */
   def authenticate = Action.async(parse.json) { implicit request =>
     request.body.validate[SignInForm.Data].map { data =>
-      println(data.email)
       credentialsProvider.authenticate(Credentials(data.email, data.password)).flatMap { loginInfo =>
         userService.retrieve(loginInfo).flatMap {
           case Some(user) => env.authenticatorService.create(loginInfo).map {

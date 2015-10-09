@@ -5,12 +5,12 @@
     .module('boardcola')
     .controller('BoardCtrl', BoardCtrl);
 
-  BoardCtrl.$inject = ['$stateParams', 'boardServices', 'stickyService', 'stickiesService'];
+  BoardCtrl.$inject = ['$stateParams', 'boardsServices', 'stickyService', 'stickiesService'];
 
   /**
-   * The home controller.
+   * The board controller.
    */
-  function BoardCtrl($stateParams, boardServices, stickyService, stickiesService) {
+  function BoardCtrl($stateParams, boardsServices, stickyService, stickiesService) {
     var vm = this;
     var board_id = $stateParams.bid;
 
@@ -27,7 +27,7 @@
     }
 
     function getBoard() {
-      boardServices.get({id: board_id}, function(data) {
+      boardsServices.get({id: board_id}, function(data) {
         vm.board = data;
       });
     }
@@ -44,12 +44,14 @@
         content: vm.content
       });
       vm.content = '';
-      newSticky.$save();
-      console.log(newSticky);
-
-      // Refresh board
-      getStickies();
       
+      newSticky.$save()
+        .then(function(success) { 
+          getStickies(); 
+        })
+        .catch(function(error) { 
+          console.log(error); 
+        });
     };
   };
 })();
