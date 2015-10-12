@@ -1,11 +1,11 @@
 package models
 
-import java.util.UUID
 import models.daos.UserDAOImpl
 
-import scala.concurrent.Future
+import java.util.UUID
+
+import scala.concurrent.{ Future, ExecutionContext }
 import slick.driver.PostgresDriver.api._
-import scala.concurrent.ExecutionContext.Implicits.global
 
 case class Category(id: Option[Long], uid: UUID, name: String)
 
@@ -22,50 +22,27 @@ class Categories(tag: Tag) extends Table[Category](tag, "categories") {
  * This acts as the data access layer.
  */
 object CategoryDAO {
-  val categories = TableQuery[Categories]
+  private val categories = TableQuery[Categories]
 
-  /**
-   * TODO: Add an OK or not OK
-   */
-  def create(category: Category) = {
-    val action = categories.map(c => (c.uid, c.name)) += (category.uid, category.name)
+  // Brings db into closer scope
+  import dbConfig._
 
-    Global.db.run(action)
+  def create(category: Category) = db.run {
+    (categories.map(c => (c.uid, c.name)) 
+      returning categories.map(_.id)
+      into ((value,id) => Category(Some(id), value._1, value._2))
+    ) += (category.uid, category.name)
   }
 
-  def findAll(): Future[Seq[Category]] = {
-    val query = categories
-    
-    val result : Future[Seq[Category]] = Global.db.run(query.result)
-    result
-  }
+  def findAll: Future[Seq[Category]] = db.run { categories.result }
+  def findById(id: Long): Future[Category] = db.run { categories.filter(_.id === id).result.head }
+  def findByUid(uid: UUID): Future[Seq[Category]] = db.run { categories.filter(_.uid === uid).result }
 
-  def findById(id: Long): Future[Category] = {
-    val query = categories.filter(_.id === id)
-                
-    val result : Future[Category] = Global.db.run(query.result.head)
-    result
-  }
-
-  def findByUid(uid: UUID): Future[Seq[Category]] = {
-    val query = categories.filter(_.uid === uid)
-    
-    val result : Future[Seq[Category]] = Global.db.run(query.result)
-    result
-  }
-
-  def update(id: Long, cat: Category) = {
-    val action = categories.filter(_.id === id)
+  def update(id: Long, cat: Category) = db.run {
+    categories.filter(_.id === id)
       .map(c => c.name)
       .update(cat.name)
-
-    Global.db.run(action)
   }
 
-  def delete(id: Long) = {
-    val action = categories.filter(_.id === id)
-      .delete
-
-    Global.db.run(action)
-  }
+  def delete(id: Long) = db.run { categories.filter(_.id === id).delete }
 }

@@ -1,17 +1,13 @@
 package models
 
-import java.util.UUID
 import models.daos.UserDAOImpl
 
+import java.util.UUID
 import java.sql.Timestamp
 import java.util.Calendar
 
-import scala.concurrent.Future
+import scala.concurrent.{ Future, ExecutionContext }
 import slick.driver.PostgresDriver.api._
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 case class Board(
   id: Option[Long], 
@@ -39,54 +35,29 @@ class Boards(tag: Tag) extends Table[Board](tag, "boards") {
  object BoardDAO {
   val boards = TableQuery[Boards]
 
-  def create(board: Board) = {
+  // Brings db into closer scope
+  import dbConfig._
+
+  def create(board: Board): Future[Board] = db.run {
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
-    val action = boards.map(b => (b.uid, b.cid, b.name, b.creationTime)) += (board.uid, board.cid, board.name, Some(new Timestamp(now.getTime())))
 
-    Global.db.run(action)
+    (boards.map(b => (b.uid, b.cid, b.name, b.creationTime))
+      returning boards.map(_.id)
+      into ((value, id) => Board(Some(id), value._1, value._2, value._3, value._4, None))
+    ) += (board.uid, board.cid, board.name, Some(new Timestamp(now.getTime())))
   }
 
-  def findAll(): Future[Seq[Board]] = {
-    val query = boards
+  def findAll: Future[Seq[Board]] = db.run { boards.result }
+  def findById(id: Long): Future[Board] = db.run { boards.filter(_.id === id).result.head }
+  def findByUid(uid: UUID): Future[Seq[Board]] = db.run { boards.filter(_.uid === uid).result }
+  def findByCid(cid: Long): Future[Seq[Board]] = db.run { boards.filter(_.cid === cid).result }
 
-    val result : Future[Seq[Board]] = Global.db.run(query.result)
-    result
-  }
-
-  def findById(id: Long): Future[Board] = {
-    val query = boards.filter(_.id === id)
-
-    val result : Future[Board] = Global.db.run(query.result.head)
-    result
-  }
-
-  def findByUid(uid: UUID): Future[Seq[Board]] = {
-    val query = boards.filter(_.uid === uid)
-
-    val result : Future[Seq[Board]] = Global.db.run(query.result)
-    result
-  }
-
-  def findByCid(cid: Long): Future[Seq[Board]] = {
-    val query = boards.filter(_.cid === cid)
-
-    val result : Future[Seq[Board]] = Global.db.run(query.result)
-    result
-  }
-
-  def updateName(id: Long, name: String) = {
-    val action = boards.filter(_.id === id)
+  def updateName(id: Long, name: String) = db.run {
+    boards.filter(_.id === id)
       .map(b => b.name)
-               .update(name)
-
-    Global.db.run(action)
+      .update(name)
   }
 
-  def delete(id: Long) = {
-    val action = boards.filter(_.id === id)
-      .delete
-
-    Global.db.run(action)
-  }
+  def delete(id: Long) = db.run { boards.filter(_.id === id).delete }
  }

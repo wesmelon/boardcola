@@ -88,7 +88,6 @@ class BoardController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       board => {
-        println("BoardDAO trying to save " + board)
         BoardDAO.create(board.copy(uid=Some(request.identity.userID)))
         Ok(Json.obj("status" -> "OK", "message" -> ("Board '"+board+"' saved.") ))
       }
@@ -107,7 +106,6 @@ class BoardController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       board => {
-        println("BoardDAO trying to save " + board)
         BoardDAO.create(board)
         Ok(Json.obj("status" -> "OK", "message" -> ("Board '"+board+"' updated.") ))
       }

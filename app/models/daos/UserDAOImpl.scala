@@ -1,24 +1,20 @@
 package models.daos
 
 import models.User
-import models.daos.UserDAOImpl._
-import models.Global
+import models.dbConfig._
 
 import java.util.UUID
 import java.sql.Timestamp
 import java.util.Calendar
 
-import slick.driver.PostgresDriver.api._
-import scala.concurrent.ExecutionContext.Implicits.global
-
 import com.mohiva.play.silhouette.api.LoginInfo
-import scala.concurrent.Future
+import scala.concurrent.{ Future, ExecutionContext }
+import slick.driver.PostgresDriver.api._
 
 /**
  * Mapping of the users in the database to the User case class.
  */
 class Users(tag: Tag) extends Table[User](tag, "users") {
-  // TODO : Fix the bind from server to db by both using uuid type. Currently, the DB uses TEXT and server uses UUID.
   def userID = column[UUID]("user_id", O.PrimaryKey)
   def providerID = column[String]("provider_id")
   def providerKey = column[String]("provider_key")
@@ -34,6 +30,8 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
  * Give access to the user object.
  */
 class UserDAOImpl extends UserDAO {
+  import models.daos.UserDAOImpl._
+
   /**
    * Finds a user by its login info.
    *
@@ -73,41 +71,27 @@ class UserDAOImpl extends UserDAO {
 object UserDAOImpl {
   val users = TableQuery[Users]
   
-  def insert(user: User) : Future[User] = {
-    println("inserting " + user)
+  def insert(user: User): Future[User] = db.run {
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
-    val action = users.map(u => (u.userID, u.providerID, u.providerKey, u.email, u.username, u.creationTime)) += 
-      (user.userID, user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
 
-    Global.db.run(action)
-    Future.successful(user)
+    (users.map(u => (u.userID, u.providerID, u.providerKey, u.email, u.username, u.creationTime)) 
+      returning users.map(_.userID)
+      into ((value, userID) => User(userID, value._2, value._3, value._4, value._5, value._6, None))
+    ) += (user.userID, user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
   }
 
-  def findAll() : Future[Seq[User]] = {
-    val query = users
+  def findAll: Future[Seq[User]] = db.run { users.result }
 
-    val result : Future[Seq[User]] = Global.db.run(query.result)
-    result
+  def findById(id: UUID): Future[Option[User]] = db.run { 
+    users.filter(u => u.userID === id).result.headOption 
   }
 
-  def findById(id: UUID) : Future[Option[User]] = {
-    val query = users.filter(u => u.userID === id)
-    
-    val result : Future[Option[User]] = Global.db.run(query.result.headOption)
-    result
+  def findByProviderIdAndKey(id: String, key: String): Future[Option[User]] = db.run {
+    users.filter(u => u.providerID === id && u.providerKey === key).result.headOption
   }
 
-  def findByProviderIdAndKey(id: String, key: String) : Future[Option[User]] = {
-    //println("finding " + id + " " + key)
-    val query = users.filter(u => u.providerID === id && u.providerKey === key)
-    
-    val result : Future[Option[User]] = Global.db.run(query.result.headOption)
-    result
-  }
-
-  def update(user: User) : Future[User] = {
-    println("updating " + user)
+  def update(user: User): Future[User] = {
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
 
@@ -115,24 +99,15 @@ object UserDAOImpl {
       .map(u => (u.providerID, u.providerKey, u.email, u.username, u.lastLogin))
       .update(user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
 
-    Global.db.run(action)
+    db.run(action)
     Future.successful(user)
   }
 
-  def updateEmail(id: UUID, email: String) = {
-    println("updating " + id + " " + email)
-    val action = users.filter(_.userID === id)
+  def updateEmail(id: UUID, email: String) = db.run {
+    users.filter(_.userID === id)
       .map(u => u.email)
       .update(email)
-
-    Global.db.run(action)
   }
 
-  def delete(id: UUID) = {
-    println("deleting " + id)
-    val action = users.filter(_.userID === id)
-      .delete
-
-    Global.db.run(action)
-  }
+  def delete(id: UUID) = db.run { users.filter(_.userID === id).delete }
 }

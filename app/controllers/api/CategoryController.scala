@@ -58,7 +58,6 @@ class CategoryController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       cat => {
-        println("CategoryDAO trying to save " + cat)
         CategoryDAO.create(cat)
         Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' saved.") ))
       }
@@ -77,7 +76,6 @@ class CategoryController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       cat => {
-        println("CategoryDAO trying to update " + cat)
         CategoryDAO.update(id, cat)
         Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' updated.") ))
       }

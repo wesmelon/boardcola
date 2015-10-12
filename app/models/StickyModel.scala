@@ -3,11 +3,8 @@ package models
 import java.sql.Timestamp
 import java.util.Calendar
 
-import scala.concurrent.Future
+import scala.concurrent.{ Future, ExecutionContext }
 import slick.driver.PostgresDriver.api._
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import play.api.libs.json._
 
 case class Sticky(
   id: Option[Long], 
@@ -37,59 +34,32 @@ class Stickies(tag: Tag) extends Table[Sticky](tag, "stickies") {
  * This acts as the data access layer.
  */
 object StickyDAO {
-  val stickies = TableQuery[Stickies]
+  private val stickies = TableQuery[Stickies]
+
+  // Brings db into closer scope
+  import dbConfig._
   
-  def create(sticky: Sticky) = {
+  def create(sticky: Sticky): Future[Sticky] = db.run {
     val calendar : Calendar = Calendar.getInstance()
     val now : java.util.Date = calendar.getTime()
-    val action = stickies.map(s => (s.bid, s.content, s.creationTime)) += (sticky.bid, sticky.content, Some(new Timestamp(now.getTime())))
 
-    Global.db.run(action)
+    (stickies.map(s => (s.bid, s.content, s.creationTime))
+      returning stickies.map(_.id)
+      into ((value, id) => Sticky(Some(id), value._1, None, value._2, None, None, value._3, None))
+    ) += (sticky.bid, sticky.content, Some(new Timestamp(now.getTime())))
   }
 
-  def findAll(): Future[Seq[Sticky]] = {
-    val query = stickies
+  def findAll: Future[Seq[Sticky]] = db.run { stickies.result }
 
-    val result : Future[Seq[Sticky]] = Global.db.run(query.result)
-    result
+  def findById(id: Long): Future[Sticky] = db.run { stickies.filter(_.id === id).result.head }
+
+  def findByBid(bid: Long): Future[Seq[Sticky]] = db.run { stickies.filter(_.bid === bid).result }
+
+  def update(id: Long, sticky: Sticky) = db.run {
+    (stickies.filter(_.id === id)
+      .map(b => (b.name, b.content))
+      .update((sticky.name.get, sticky.content)))
   }
 
-  def findById(id: Long): Future[Sticky] = {
-    val query = stickies.filter(_.id === id)
-
-    val result : Future[Sticky] = Global.db.run(query.result.head)
-    result
-  }
-
-  def findByBid(bid: Long): Future[Seq[Sticky]] = {
-    val query = stickies.filter(_.bid === bid)
-
-    val result : Future[Seq[Sticky]] = Global.db.run(query.result)
-    result
-  }
-
-  // Maybe combine this one with the one below
-  def updateName(id: Long, name: String) = {
-    val action = stickies.filter(_.id === id)
-      .map(b => b.name)
-      .update(name)
-
-    Global.db.run(action)
-  }
-
-  def updateContent(id: Long, content: String) = {
-    val action = stickies.filter(_.id === id)
-      .map(b => b.content)
-      .update(content)
-
-    Global.db.run(action)
-  }
-
-  def delete(id: Long) = {
-    val action = stickies.filter(_.id === id)
-      .delete
-
-    Global.db.run(action)
-  }
-  
+  def delete(id: Long) = { stickies.filter(_.id === id).delete }	
 }

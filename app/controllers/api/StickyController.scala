@@ -81,7 +81,6 @@ class StickyController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       sticky => {
-        println("StickyDAO trying to save " + sticky)
         StickyDAO.create(sticky)
         Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+sticky+"' saved.") ))
       }
@@ -100,7 +99,6 @@ class StickyController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       sticky => {
-        println("StickyDAO trying to save " + sticky)
         StickyDAO.create(sticky)
         Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+sticky+"' updated.") ))
       }
