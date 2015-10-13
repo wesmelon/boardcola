@@ -28,7 +28,7 @@ class BoardRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec
     def creationTime = column[Option[Timestamp]]("creation_time")
     def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
 
-    def * = (id.?, uid, cid, name, creationTime, lastModified) <> (Board.tupled, Board.unapply)
+    def * = (id.?, uid, cid, name, creationTime, lastModified) <> ((Board.apply _).tupled, Board.unapply)
   }
 
   private val boards = TableQuery[Boards]

@@ -17,27 +17,12 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import play.api.libs.json._
-import play.api.libs.functional.syntax._
 
 class CategoryController @Inject() (
     categoryDAO: CategoryRepo,
     val messagesApi: MessagesApi,
     val env: Environment[User, JWTAuthenticator]) 
   extends Silhouette[User, JWTAuthenticator] {
-
-  implicit val categoryWrites = new Writes[Category] {
-      def writes(category: Category) = Json.obj(
-        "id" -> category.id,
-        "uid" -> category.uid,
-        "name" -> category.name
-    )
-  }
-
-  implicit val categoryReads: Reads[Category] = (
-    (JsPath \ "id").readNullable[Long] and
-    (JsPath \ "uid").readNullable[UUID] and
-    (JsPath \ "name").read[String]
-  )(Category.apply _)
 
   /**
    * Gets categories by currently logged in user

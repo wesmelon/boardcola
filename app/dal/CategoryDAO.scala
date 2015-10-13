@@ -22,7 +22,7 @@ class CategoryRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit
     def uid = column[Option[UUID]]("user_id")
     def name = column[String]("name")
 
-    def * = (id.?, uid, name) <> (Category.tupled, Category.unapply)
+    def * = (id.?, uid, name) <> ((Category.apply _).tupled, Category.unapply)
   }
 
   private val categories = TableQuery[Categories]

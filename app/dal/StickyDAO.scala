@@ -29,7 +29,7 @@ class StickyRepo @Inject() (boardDAO: BoardRepo, dbConfigProvider: DatabaseConfi
     def creationTime = column[Option[Timestamp]]("creation_time")
     def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
 
-    def * = (id.?, bid, name.?, content, xPos.?, yPos.?, creationTime, lastModified) <> (Sticky.tupled, Sticky.unapply)
+    def * = (id.?, bid, name.?, content, xPos.?, yPos.?, creationTime, lastModified) <> ((Sticky.apply _).tupled, Sticky.unapply)
   }
 
   private val stickies = TableQuery[Stickies]
