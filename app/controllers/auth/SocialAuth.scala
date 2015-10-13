@@ -2,14 +2,14 @@ package controllers.auth
 
 import javax.inject.Inject
 
+import services.UserService
+import services.BoardcolaSocialProfileBuilder
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers._
-import models.services.BoardcolaSocialProfileBuilder
 import models.User
-import models.services.UserService
 import play.api.cache.CacheApi
 import play.api.i18n.{ MessagesApi, Messages }
 import play.api.libs.concurrent.Execution.Implicits._

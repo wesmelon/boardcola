@@ -6,7 +6,8 @@ import play.api.i18n.MessagesApi
 import play.api._
 import play.api.mvc._
 
-import models.{ User, Sticky, StickyDAO }
+import models.{ User, Sticky }
+import dal.StickyRepo
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -18,6 +19,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 class StickyController @Inject() (
+    stickyDAO: StickyRepo,
     val messagesApi: MessagesApi,
     val env: Environment[User, JWTAuthenticator]) 
   extends Silhouette[User, JWTAuthenticator] {
@@ -55,7 +57,7 @@ class StickyController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getStickies(bid: Long) = SecuredAction.async { implicit request =>
-    val f = StickyDAO.findByBid(bid)
+    val f = stickyDAO.findByBid(bid)
 
     f.map(s => Ok(Json.toJson(s)))
   }
@@ -65,7 +67,7 @@ class StickyController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getSticky(id: Long) = SecuredAction.async { implicit request =>
-    val f = StickyDAO.findById(id)
+    val f = stickyDAO.findById(id)
 
     f.map(s => Ok(Json.toJson(s)))
   }
@@ -81,7 +83,7 @@ class StickyController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       sticky => {
-        StickyDAO.create(sticky)
+        stickyDAO.create(sticky)
         Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+sticky+"' saved.") ))
       }
     )
@@ -99,7 +101,7 @@ class StickyController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       sticky => {
-        StickyDAO.create(sticky)
+        stickyDAO.create(sticky)
         Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+sticky+"' updated.") ))
       }
     )
@@ -112,7 +114,7 @@ class StickyController @Inject() (
    */
   def deleteSticky(id: Long) = SecuredAction { implicit request =>
     // TODO: if sticky does not exist
-    StickyDAO.delete(id)
+    stickyDAO.delete(id)
     Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+id+"' deleted.") ))
   }
 }

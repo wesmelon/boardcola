@@ -1,7 +1,6 @@
-package models.daos
+package dal
 
-import models.dbConfig._
-import models.daos.PasswordInfoDAO._
+import javax.inject.{Inject, Singleton}
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
@@ -9,7 +8,9 @@ import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 
 import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.ExecutionContext.Implicits.global
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.PostgresDriver.api._
+import slick.driver.JdbcProfile
 
 import scala.collection.mutable
 
@@ -21,20 +22,10 @@ case class PasswordInfoWithIdentifier(
   salt: Option[String] = None
 )
 
-class Passwords(tag: Tag) extends Table[PasswordInfoWithIdentifier](tag, "passwords") {
-  def providerId = column[String]("provider_id")
-  def providerKey = column[String]("provider_key")
-  def hasher = column[String]("hasher")
-  def password = column[String]("password")
-  def salt = column[Option[String]]("salt")
-
-  def * = (providerId, providerKey, hasher, password, salt) <> (PasswordInfoWithIdentifier.tupled, PasswordInfoWithIdentifier.unapply)
-}
-
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
+class PasswordInfoDAO @Inject()(passwordInfoDAO: PasswordRepo) extends DelegableAuthInfoDAO[PasswordInfo] {
 
   /**
    * Finds the auth info which is linked with the specified login info.
@@ -43,7 +34,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The retrieved auth info or None if no auth info could be retrieved for the given login info.
    */
   def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
-    findByProviderIdAndKey(loginInfo)
+    passwordInfoDAO.findByProviderIdAndKey(loginInfo)
   }
 
   /**
@@ -54,7 +45,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The added auth info.
    */
   def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    insert(loginInfo, authInfo)
+    passwordInfoDAO.insert(loginInfo, authInfo)
   }
 
   /**
@@ -65,7 +56,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The updated auth info.
    */
   def update(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    update(loginInfo, authInfo)
+    passwordInfoDAO.update(loginInfo, authInfo)
   }
 
   /**
@@ -92,16 +83,30 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return A future to wait for the process to be completed.
    */
   def remove(loginInfo: LoginInfo): Future[Unit] = {
-    delete(loginInfo)
+    passwordInfoDAO.delete(loginInfo)
     Future.successful(())
   }
 }
 
-/**
- * The companion object.
- */
-object PasswordInfoDAO {
-  val passwords = TableQuery[Passwords]
+@Singleton
+class PasswordRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+
+  // Brings db into scope
+  import dbConfig._
+  import driver.api._
+
+  private class Passwords(tag: Tag) extends Table[PasswordInfoWithIdentifier](tag, "passwords") {
+    def providerId = column[String]("provider_id")
+    def providerKey = column[String]("provider_key")
+    def hasher = column[String]("hasher")
+    def password = column[String]("password")
+    def salt = column[Option[String]]("salt")
+
+    def * = (providerId, providerKey, hasher, password, salt) <> (PasswordInfoWithIdentifier.tupled, PasswordInfoWithIdentifier.unapply)
+  }
+
+  private val passwords = TableQuery[Passwords]
 
   def insert(loginInfo: LoginInfo, authInfo: PasswordInfo) : Future[PasswordInfo] = {
     val action = passwords.map(p => (p.providerId, p.providerKey, p.hasher, p.password, p.salt)) +=

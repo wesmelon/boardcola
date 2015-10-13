@@ -29,7 +29,6 @@ libraryDependencies ++= Seq(
 
   // Database dependencies
   "org.postgresql" %  "postgresql" % "9.4-1202-jdbc42",
-  //"com.typesafe.slick"  %% "slick" % "3.0.3",
   "com.typesafe.play" %% "play-slick" % "1.1.0",
   "com.typesafe.play" %% "play-slick-evolutions" % "1.1.0",
   "org.slf4j" % "slf4j-nop" % "1.6.4",

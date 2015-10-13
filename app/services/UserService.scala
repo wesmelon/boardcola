@@ -1,4 +1,4 @@
-package models.services
+package services
 
 import java.util.UUID
 import java.sql.Timestamp
@@ -17,7 +17,6 @@ case class BoardcolaSocialProfile(
   username: String,
   creationTime: Option[Timestamp], 
   lastLogin: Option[Timestamp]) extends SocialProfile
-
 
 /**
  * The profile builder for the common social profile.

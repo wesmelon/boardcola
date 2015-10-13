@@ -6,7 +6,8 @@ import play.api.i18n.MessagesApi
 import play.api._
 import play.api.mvc._
 
-import models.{ User, Category, CategoryDAO }
+import models.{ User, Category }
+import dal.CategoryRepo
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -19,6 +20,7 @@ import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
 class CategoryController @Inject() (
+    categoryDAO: CategoryRepo,
     val messagesApi: MessagesApi,
     val env: Environment[User, JWTAuthenticator]) 
   extends Silhouette[User, JWTAuthenticator] {
@@ -42,7 +44,7 @@ class CategoryController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getCategories = SecuredAction.async { implicit request =>
-    val f = CategoryDAO.findByUid(request.identity.userID)
+    val f = categoryDAO.findByUid(request.identity.userID)
 
     f.map(s => Ok(Json.toJson(s)))
   }
@@ -58,7 +60,7 @@ class CategoryController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       cat => {
-        CategoryDAO.create(cat)
+        categoryDAO.create(cat)
         Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' saved.") ))
       }
     )
@@ -76,7 +78,7 @@ class CategoryController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       cat => {
-        CategoryDAO.update(id, cat)
+        categoryDAO.update(id, cat)
         Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' updated.") ))
       }
     )
@@ -89,7 +91,7 @@ class CategoryController @Inject() (
    */
   def deleteCategory(id: Long) = SecuredAction { implicit request =>
     // TODO: if category does not exist
-    CategoryDAO.delete(id)
+    categoryDAO.delete(id)
     Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+id+"' deleted.") ))
   }
 }

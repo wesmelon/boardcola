@@ -3,6 +3,10 @@ package modules
 import net.codingwell.scalaguice.ScalaModule
 import com.google.inject.{ AbstractModule, Provides }
 
+import services.{ UserService, UserServiceImpl }
+import models.User
+import dal._
+
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
 import com.mohiva.play.silhouette.api.services._
 import com.mohiva.play.silhouette.api.util._
@@ -19,10 +23,6 @@ import com.mohiva.play.silhouette.impl.providers.openid.services.PlayOpenIDServi
 import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
 import com.mohiva.play.silhouette.impl.services._
 import com.mohiva.play.silhouette.impl.util._
-
-import models.User
-import models.daos._
-import models.services.{ UserService, UserServiceImpl }
 
 import net.ceedubs.ficus.Ficus._
 import net.ceedubs.ficus.readers.ArbitraryTypeReader._
@@ -96,7 +96,7 @@ class BoardcolaModule extends AbstractModule with ScalaModule {
     facebookProvider: FacebookProvider,
     googleProvider: GoogleProvider): SocialProviderRegistry = {
 
-  	SocialProviderRegistry(Seq(
+    SocialProviderRegistry(Seq(
       googleProvider,
       facebookProvider
     ))

@@ -1,7 +1,7 @@
-package models.daos
+package dal
 
 import models.User
-import models.dbConfig._
+import javax.inject.{Inject, Singleton}
 
 import java.util.UUID
 import java.sql.Timestamp
@@ -9,36 +9,21 @@ import java.util.Calendar
 
 import com.mohiva.play.silhouette.api.LoginInfo
 import scala.concurrent.{ Future, ExecutionContext }
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.driver.PostgresDriver.api._
-
-/**
- * Mapping of the users in the database to the User case class.
- */
-class Users(tag: Tag) extends Table[User](tag, "users") {
-  def userID = column[UUID]("user_id", O.PrimaryKey)
-  def providerID = column[String]("provider_id")
-  def providerKey = column[String]("provider_key")
-  def email = column[String]("email")
-  def username = column[String]("username")
-  def creationTime = column[Option[Timestamp]]("creation_time")
-  def lastLogin = column[Option[Timestamp]]("last_login", O.Default(None))
-
-  def * = (userID, providerID, providerKey, email, username, creationTime, lastLogin) <> ((User.apply _).tupled, User.unapply)
-}
+import slick.driver.JdbcProfile
 
 /**
  * Give access to the user object.
  */
-class UserDAOImpl extends UserDAO {
-  import models.daos.UserDAOImpl._
-
+class UserDAOImpl @Inject()(userInfoDAO: UserRepo)  extends UserDAO {
   /**
    * Finds a user by its login info.
    *
    * @param loginInfo The login info of the user to find.
    * @return The found user or None if no user for the given login info could be found.
    */
-  def findByLoginInfo(loginInfo: LoginInfo) = findByProviderIdAndKey(loginInfo.providerID, loginInfo.providerKey)
+  def findByLoginInfo(loginInfo: LoginInfo) = userInfoDAO.findByProviderIdAndKey(loginInfo.providerID, loginInfo.providerKey)
 
   /**
    * Finds a user by its user ID.
@@ -46,7 +31,7 @@ class UserDAOImpl extends UserDAO {
    * @param userID The ID of the user to find.
    * @return The found user or None if no user for the given ID could be found.
    */
-  def findById(id: UUID) = findById(id)
+  def findById(id: UUID) = userInfoDAO.findById(id)
 
   /**
    * Creates a user.
@@ -54,7 +39,7 @@ class UserDAOImpl extends UserDAO {
    * @param user The user to create.
    * @return The created user.
    */
-  def create(user: User) = insert(user)
+  def create(user: User) = userInfoDAO.insert(user)
 
   /**
    * Saves a user.
@@ -62,14 +47,33 @@ class UserDAOImpl extends UserDAO {
    * @param user The user to save.
    * @return The saved user.
    */
-  def save(user: User) = update(user)
+  def save(user: User) = userInfoDAO.update(user)
 }
 
-/**
- * The companion object.
- */
-object UserDAOImpl {
-  val users = TableQuery[Users]
+@Singleton
+class UserRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+  private val dbConfig = dbConfigProvider.get[JdbcProfile]
+
+  // Brings db into scope
+  import dbConfig._
+  import driver.api._
+
+  /**
+   * Mapping of the users in the database to the User case class.
+   */
+  private class Users(tag: Tag) extends Table[User](tag, "users") {
+    def userID = column[UUID]("user_id", O.PrimaryKey)
+    def providerID = column[String]("provider_id")
+    def providerKey = column[String]("provider_key")
+    def email = column[String]("email")
+    def username = column[String]("username")
+    def creationTime = column[Option[Timestamp]]("creation_time")
+    def lastLogin = column[Option[Timestamp]]("last_login", O.Default(None))
+
+    def * = (userID, providerID, providerKey, email, username, creationTime, lastLogin) <> ((User.apply _).tupled, User.unapply)
+  }
+
+  private val users = TableQuery[Users]
   
   def insert(user: User): Future[User] = db.run {
     val calendar : Calendar = Calendar.getInstance()

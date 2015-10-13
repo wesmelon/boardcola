@@ -1,4 +1,4 @@
-package models.services
+package services
 
 import java.util.UUID
 import javax.inject.Inject
@@ -6,7 +6,7 @@ import javax.inject.Inject
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.impl.providers.SocialProfile
 import models.User
-import models.daos.UserDAO
+import dal.UserDAO
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.concurrent.Future
