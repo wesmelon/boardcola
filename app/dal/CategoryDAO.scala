@@ -19,7 +19,7 @@ class CategoryRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit
 
   private class Categories(tag: Tag) extends Table[Category](tag, "categories") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-    def uid = column[UUID]("user_id")
+    def uid = column[Option[UUID]]("user_id")
     def name = column[String]("name")
 
     def * = (id.?, uid, name) <> (Category.tupled, Category.unapply)

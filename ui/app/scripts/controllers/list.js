@@ -5,16 +5,17 @@
     .module('boardcola')
     .controller('ListCtrl', ListCtrl);
 
-  ListCtrl.$inject = ['account', 'category', 'boardsServices'];
+  ListCtrl.$inject = ['account', 'boardsServices', 'categoryServices'];
 
   /**
    * The list controller.
    */
-  function ListCtrl(account, category, boardsServices) {
+  function ListCtrl(account, boardsServices, categoryServices) {
     var vm = this;
     vm.categories = [];
     vm.boards = [];
     vm.addBoard = addBoard;
+    vm.addCategory = addCategory;
     vm.name = '';
 
     activate();
@@ -35,9 +36,24 @@
     }
 
     function getCategories() {
-      category.query(function(data) {
+      categoryServices.query(function(data) {
         vm.categories = data;
       });
+    }
+
+    function addCategory() {
+      var newCat = new categoryServices({
+        name: vm.catName
+      });
+
+      vm.catName = '';
+      newCat.$save()
+        .then(function(success) { 
+          getCategories(); 
+        })
+        .catch(function(error) { 
+          console.log(error); 
+        });
     }
 
     function getBoards() {

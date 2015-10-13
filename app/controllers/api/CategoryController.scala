@@ -35,7 +35,7 @@ class CategoryController @Inject() (
 
   implicit val categoryReads: Reads[Category] = (
     (JsPath \ "id").readNullable[Long] and
-    (JsPath \ "uid").read[UUID] and
+    (JsPath \ "uid").readNullable[UUID] and
     (JsPath \ "name").read[String]
   )(Category.apply _)
 
@@ -60,7 +60,7 @@ class CategoryController @Inject() (
         BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
       },
       cat => {
-        categoryDAO.create(cat)
+        categoryDAO.create(cat.copy(uid=Some(request.identity.userID)))
         Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' saved.") ))
       }
     )

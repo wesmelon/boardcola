@@ -3,14 +3,14 @@
 
   angular
     .module('boardcola')
-    .factory('category', category);
+    .factory('categoryServices', categoryServices);
 
-  category.$inject = ['$resource'];
+  categoryServices.$inject = ['$resource'];
 
   /**
    * The category factory.
    */
-  function category($resource) {
-    return $resource('api/categories');
+  function categoryServices($resource) {
+    return $resource('api/categories/:id');
   };
 })();
