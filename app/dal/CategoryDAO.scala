@@ -34,9 +34,9 @@ class CategoryRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit
     ) += (category.uid, category.name)
   }
 
-  def findAll: Future[Seq[Category]] = db.run { categories.result }
-  def findById(id: Long): Future[Category] = db.run { categories.filter(_.id === id).result.head }
-  def findByUid(uid: UUID): Future[Seq[Category]] = db.run { categories.filter(_.uid === uid).result }
+  def findAll: Future[Seq[Category]] = db.run(categories.result)
+  def findById(id: Long): Future[Category] = db.run(categories.filter(_.id === id).result.head)
+  def findByUid(uid: UUID): Future[Seq[Category]] = db.run(categories.filter(_.uid === uid).result)
 
   def update(id: Long, cat: Category) = db.run {
     categories.filter(_.id === id)
@@ -44,5 +44,5 @@ class CategoryRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit
       .update(cat.name)
   }
 
-  def delete(id: Long) = db.run { categories.filter(_.id === id).delete }
+  def delete(id: Long) = db.run(categories.filter(_.id === id).delete)
 }

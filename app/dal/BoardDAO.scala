@@ -1,6 +1,7 @@
 package dal
 
 import javax.inject.{Inject, Singleton}
+import java.time.Instant
 import models.Board
 
 import java.util.UUID
@@ -16,7 +17,6 @@ import slick.driver.JdbcProfile
 class BoardRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
   
-  // Brings db into scope
   import dbConfig._
   import driver.api._
 
@@ -34,19 +34,19 @@ class BoardRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec
   private val boards = TableQuery[Boards]
 
   def create(board: Board): Future[Board] = db.run {
-    val calendar : Calendar = Calendar.getInstance()
-    val now : java.util.Date = calendar.getTime()
+    val timestamp = Instant.now()
+    val created = new Timestamp(timestamp.toEpochMilli())
 
     (boards.map(b => (b.uid, b.cid, b.name, b.creationTime))
       returning boards.map(_.id)
       into ((value, id) => Board(Some(id), value._1, value._2, value._3, value._4, None))
-    ) += (board.uid, board.cid, board.name, Some(new Timestamp(now.getTime())))
+    ) += (board.uid, board.cid, board.name, Some(created))
   }
 
-  def findAll: Future[Seq[Board]] = db.run { boards.result }
-  def findById(id: Long): Future[Board] = db.run { boards.filter(_.id === id).result.head }
-  def findByUid(uid: UUID): Future[Seq[Board]] = db.run { boards.filter(_.uid === uid).result }
-  def findByCid(cid: Long): Future[Seq[Board]] = db.run { boards.filter(_.cid === cid).result }
+  def findAll: Future[Seq[Board]] = db.run(boards.result)
+  def findById(id: Long): Future[Board] = db.run(boards.filter(_.id === id).result.head)
+  def findByUid(uid: UUID): Future[Seq[Board]] = db.run(boards.filter(_.uid === uid).result)
+  def findByCid(cid: Long): Future[Seq[Board]] = db.run(boards.filter(_.cid === cid).result)
 
   def updateName(id: Long, name: String) = db.run {
     boards.filter(_.id === id)
@@ -54,5 +54,5 @@ class BoardRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec
       .update(name)
   }
 
-  def delete(id: Long) = db.run { boards.filter(_.id === id).delete }
+  def delete(id: Long) = db.run(boards.filter(_.id === id).delete)
 }

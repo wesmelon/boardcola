@@ -1,6 +1,7 @@
 package dal
 
 import javax.inject.{Inject, Singleton}
+import java.time.Instant
 import models.Sticky
 
 import java.sql.Timestamp
@@ -15,7 +16,6 @@ import slick.driver.JdbcProfile
 class StickyRepo @Inject() (boardDAO: BoardRepo, dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
   
-  // Brings db into scope
   import dbConfig._
   import driver.api._
 
@@ -35,20 +35,20 @@ class StickyRepo @Inject() (boardDAO: BoardRepo, dbConfigProvider: DatabaseConfi
   private val stickies = TableQuery[Stickies]
 
   def create(sticky: Sticky): Future[Sticky] = db.run {
-    val calendar : Calendar = Calendar.getInstance()
-    val now : java.util.Date = calendar.getTime()
+    val timestamp = Instant.now()
+    val created = new Timestamp(timestamp.toEpochMilli())
 
     (stickies.map(s => (s.bid, s.content, s.creationTime))
       returning stickies.map(_.id)
       into ((value, id) => Sticky(Some(id), value._1, None, value._2, None, None, value._3, None))
-    ) += (sticky.bid, sticky.content, Some(new Timestamp(now.getTime())))
+    ) += (sticky.bid, sticky.content, Some(created))
   }
 
-  def findAll: Future[Seq[Sticky]] = db.run { stickies.result }
+  def findAll: Future[Seq[Sticky]] = db.run(stickies.result)
 
-  def findById(id: Long): Future[Sticky] = db.run { stickies.filter(_.id === id).result.head }
+  def findById(id: Long): Future[Sticky] = db.run(stickies.filter(_.id === id).result.head)
 
-  def findByBid(bid: Long): Future[Seq[Sticky]] = db.run { stickies.filter(_.bid === bid).result }
+  def findByBid(bid: Long): Future[Seq[Sticky]] = db.run(stickies.filter(_.bid === bid).result)
 
   def update(id: Long, sticky: Sticky) = db.run {
     (stickies.filter(_.id === id)

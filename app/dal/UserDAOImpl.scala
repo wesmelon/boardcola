@@ -2,6 +2,7 @@ package dal
 
 import models.User
 import javax.inject.{Inject, Singleton}
+import java.time.Instant
 
 import java.util.UUID
 import java.sql.Timestamp
@@ -76,16 +77,16 @@ class UserRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec:
   private val users = TableQuery[Users]
   
   def insert(user: User): Future[User] = db.run {
-    val calendar : Calendar = Calendar.getInstance()
-    val now : java.util.Date = calendar.getTime()
+    val timestamp = Instant.now()
+    val created = new Timestamp(timestamp.toEpochMilli())
 
     (users.map(u => (u.userID, u.providerID, u.providerKey, u.email, u.username, u.creationTime)) 
       returning users.map(_.userID)
       into ((value, userID) => User(userID, value._2, value._3, value._4, value._5, value._6, None))
-    ) += (user.userID, user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
+    ) += (user.userID, user.providerID, user.providerKey, user.email, user.username, Some(created))
   }
 
-  def findAll: Future[Seq[User]] = db.run { users.result }
+  def findAll: Future[Seq[User]] = db.run(users.result)
 
   def findById(id: UUID): Future[Option[User]] = db.run { 
     users.filter(u => u.userID === id).result.headOption 
@@ -96,12 +97,12 @@ class UserRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec:
   }
 
   def update(user: User): Future[User] = {
-    val calendar : Calendar = Calendar.getInstance()
-    val now : java.util.Date = calendar.getTime()
+    val timestamp = Instant.now()
+    val created = new Timestamp(timestamp.toEpochMilli())
 
     val action = users.filter(_.userID === user.userID)
       .map(u => (u.providerID, u.providerKey, u.email, u.username, u.lastLogin))
-      .update(user.providerID, user.providerKey, user.email, user.username, Some(new Timestamp(now.getTime())))
+      .update(user.providerID, user.providerKey, user.email, user.username, Some(created))
 
     db.run(action)
     Future.successful(user)
@@ -113,5 +114,5 @@ class UserRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec:
       .update(email)
   }
 
-  def delete(id: UUID) = db.run { users.filter(_.userID === id).delete }
+  def delete(id: UUID) = db.run(users.filter(_.userID === id).delete)
 }
