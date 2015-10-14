@@ -8,6 +8,7 @@ import play.api.mvc._
 
 import models.{ User, Board }
 import dal.BoardRepo
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -58,15 +59,17 @@ class BoardController @Inject() (
    * Upload a new board through currently logged in user
    * @return HTTP response of a JSON string
    */
-  def addBoard = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def addBoard = 
+    SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val boardResult = request.body.validate[Board]
     boardResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(JsError.toJson(errors)))
       },
       board => {
-        boardDAO.create(board.copy(uid=Some(request.identity.userID)))
-        Ok(Json.obj("status" -> "OK", "message" -> ("Board '"+board+"' saved.") ))
+        val boardWithId = board.copy(uid=Some(request.identity.userID));
+        boardDAO.create(boardWithId).map(b => Created(Json.toJson(b)))
       }
     )
   }
@@ -76,15 +79,17 @@ class BoardController @Inject() (
    * @param id 
    * @return HTTP response of a JSON string
    */
-  def updateBoard(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def updateBoard(id: Long) = 
+    SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val boardResult = request.body.validate[Board]
     boardResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(JsError.toJson(errors)))
       },
       board => {
-        boardDAO.create(board)
-        Ok(Json.obj("status" -> "OK", "message" -> ("Board '"+board+"' updated.") ))
+        val boardWithId = board.copy(uid=Some(request.identity.userID));
+        boardDAO.create(boardWithId).map(b => Ok(Json.toJson(b)))
       }
     )
   }
@@ -94,9 +99,7 @@ class BoardController @Inject() (
    * @param id 
    * @return Ok response
    */
-  def deleteBoard(id: Long) = SecuredAction { implicit request =>
-    // TODO: if board does not exist
-    boardDAO.delete(id)
-    Ok(Json.obj("status" -> "OK", "message" -> ("Board '"+id+"' deleted.") ))
+  def deleteBoard(id: Long) = SecuredAction.async { implicit request =>
+    boardDAO.delete(id).map(b => Ok(Json.obj("id" -> id)))
   }
 }

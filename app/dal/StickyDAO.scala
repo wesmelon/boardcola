@@ -13,7 +13,9 @@ import slick.driver.PostgresDriver.api._
 import slick.driver.JdbcProfile
 
 @Singleton
-class StickyRepo @Inject() (boardDAO: BoardRepo, dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+class StickyRepo @Inject() (boardDAO: BoardRepo, 
+  dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
   
   import dbConfig._
@@ -29,7 +31,8 @@ class StickyRepo @Inject() (boardDAO: BoardRepo, dbConfigProvider: DatabaseConfi
     def creationTime = column[Option[Timestamp]]("creation_time")
     def lastModified = column[Option[Timestamp]]("last_modified", O.Default(None))
 
-    def * = (id.?, bid, name.?, content, xPos.?, yPos.?, creationTime, lastModified) <> ((Sticky.apply _).tupled, Sticky.unapply)
+    def * = (id.?, bid, name.?, content, xPos.?, yPos.?, creationTime, lastModified) <>
+      ((Sticky.apply _).tupled, Sticky.unapply)
   }
 
   private val stickies = TableQuery[Stickies]
@@ -37,24 +40,26 @@ class StickyRepo @Inject() (boardDAO: BoardRepo, dbConfigProvider: DatabaseConfi
   def create(sticky: Sticky): Future[Sticky] = db.run {
     val timestamp = Instant.now()
     val created = new Timestamp(timestamp.toEpochMilli())
+    val stickyWithTime = sticky.copy(creationTime=Some(created))
 
-    (stickies.map(s => (s.bid, s.content, s.creationTime))
-      returning stickies.map(_.id)
-      into ((value, id) => Sticky(Some(id), value._1, None, value._2, None, None, value._3, None))
-    ) += (sticky.bid, sticky.content, Some(created))
+    (stickies returning stickies.map(_.id) 
+      into ((sticky, id) => sticky.copy(id=Some(id)))
+    ) += stickyWithTime
   }
 
   def findAll: Future[Seq[Sticky]] = db.run(stickies.result)
 
-  def findById(id: Long): Future[Sticky] = db.run(stickies.filter(_.id === id).result.head)
+  def findById(id: Long): Future[Sticky] = 
+    db.run(stickies.filter(_.id === id).result.head)
 
-  def findByBid(bid: Long): Future[Seq[Sticky]] = db.run(stickies.filter(_.bid === bid).result)
+  def findByBid(bid: Long): Future[Seq[Sticky]] = 
+    db.run(stickies.filter(_.bid === bid).result)
 
-  def update(id: Long, sticky: Sticky) = db.run {
-    (stickies.filter(_.id === id)
-      .map(b => (b.name, b.content))
-      .update((sticky.name.get, sticky.content)))
+  def update(id: Long, sticky: Sticky): Future[Unit] = db.run { 
+    val q = for { s <- stickies if s.id === id } yield s
+    q.update(sticky).map(_ => ())
   }
 
-  def delete(id: Long) = db.run(stickies.filter(_.id === id).delete)
+  def delete(id: Long): Future[Unit] = 
+    db.run(stickies.filter(_.id === id).delete.map(_ => ()))
 }

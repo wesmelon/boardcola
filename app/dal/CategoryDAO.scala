@@ -10,10 +10,11 @@ import slick.driver.PostgresDriver.api._
 import slick.driver.JdbcProfile
 
 @Singleton
-class CategoryRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+class CategoryRepo @Inject() 
+  (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
+
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
   
-  // Brings db into scope
   import dbConfig._
   import driver.api._
 
@@ -27,22 +28,25 @@ class CategoryRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit
 
   private val categories = TableQuery[Categories]
 
-  def create(category: Category) = db.run {
-    (categories.map(c => (c.uid, c.name)) 
-      returning categories.map(_.id)
-      into ((value,id) => Category(Some(id), value._1, value._2))
-    ) += (category.uid, category.name)
+  def create(category: Category): Future[Category] = db.run {
+    (categories returning categories.map(_.id) 
+      into ((category,id) => category.copy(id=Some(id)))
+    ) += category
   }
 
   def findAll: Future[Seq[Category]] = db.run(categories.result)
-  def findById(id: Long): Future[Category] = db.run(categories.filter(_.id === id).result.head)
-  def findByUid(uid: UUID): Future[Seq[Category]] = db.run(categories.filter(_.uid === uid).result)
 
-  def update(id: Long, cat: Category) = db.run {
-    categories.filter(_.id === id)
-      .map(c => c.name)
-      .update(cat.name)
+  def findById(id: Long): Future[Category] = 
+    db.run(categories.filter(_.id === id).result.head)
+
+  def findByUid(uid: UUID): Future[Seq[Category]] = 
+    db.run(categories.filter(_.uid === uid).result)
+
+  def update(id: Long, cat: Category): Future[Unit] = db.run {
+    val q = for { c <- categories if c.id === id } yield c
+    q.update(cat).map(_ => ())
   }
 
-  def delete(id: Long) = db.run(categories.filter(_.id === id).delete)
+  def delete(id: Long): Future[Unit] = 
+    db.run(categories.filter(_.id === id).delete.map(_ => ()))
 }

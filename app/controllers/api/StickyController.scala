@@ -8,6 +8,7 @@ import play.api.mvc._
 
 import models.{ User, Sticky }
 import dal.StickyRepo
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -47,15 +48,16 @@ class StickyController @Inject() (
    * Upload a new sticky through currently logged in user
    * @return HTTP response of a JSON string
    */
-  def addSticky = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def addSticky = 
+    SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val stickyResult = request.body.validate[Sticky]
     stickyResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(JsError.toJson(errors)))
       },
       sticky => {
-        stickyDAO.create(sticky)
-        Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+sticky+"' saved.") ))
+        stickyDAO.create(sticky).map(s => Ok(Json.toJson(s)))
       }
     )
   }
@@ -65,15 +67,16 @@ class StickyController @Inject() (
    * @param id 
    * @return HTTP response of a JSON string
    */
-  def updateSticky(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def updateSticky(id: Long) = 
+    SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val stickyResult = request.body.validate[Sticky]
     stickyResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(JsError.toJson(errors)))
       },
       sticky => {
-        stickyDAO.create(sticky)
-        Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+sticky+"' updated.") ))
+        stickyDAO.create(sticky).map(s => Ok(Json.toJson(s)))
       }
     )
   }
@@ -83,9 +86,7 @@ class StickyController @Inject() (
    * @param id 
    * @return Ok response
    */
-  def deleteSticky(id: Long) = SecuredAction { implicit request =>
-    // TODO: if sticky does not exist
-    stickyDAO.delete(id)
-    Ok(Json.obj("status" -> "OK", "message" -> ("Sticky '"+id+"' deleted.") ))
+  def deleteSticky(id: Long) = SecuredAction.async { implicit request =>
+    stickyDAO.delete(id).map(s => Ok(Json.obj("id" -> id)))
   }
 }

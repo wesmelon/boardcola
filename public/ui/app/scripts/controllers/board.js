@@ -45,13 +45,9 @@
       });
       vm.content = '';
       
-      newSticky.$save()
-        .then(function(success) { 
-          getStickies(); 
-        })
-        .catch(function(error) { 
-          console.log(error); 
-        });
+      newSticky.$save(function() {
+        getStickies();
+      });
     };
   };
 })();

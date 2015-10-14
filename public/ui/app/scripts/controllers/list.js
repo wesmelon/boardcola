@@ -47,13 +47,10 @@
       });
 
       vm.catName = '';
-      newCat.$save()
-        .then(function(success) { 
-          getCategories(); 
-        })
-        .catch(function(error) { 
-          console.log(error); 
-        });
+      newCat.$save(function() {
+        getCategories()
+      });
+      
     }
 
     function getBoards() {
@@ -68,13 +65,9 @@
       });
 
       vm.name = '';
-      newBoard.$save()
-        .then(function(success) { 
-          getBoards(); 
-        })
-        .catch(function(error) { 
-          console.log(error); 
-        });
+      newBoard.$save(function() {
+        getBoards()
+      });
     }
   };
 })();

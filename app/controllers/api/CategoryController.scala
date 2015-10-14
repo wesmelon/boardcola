@@ -8,6 +8,7 @@ import play.api.mvc._
 
 import models.{ User, Category }
 import dal.CategoryRepo
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -38,15 +39,17 @@ class CategoryController @Inject() (
    * Upload a new category through currently logged in user
    * @return HTTP response of a JSON string
    */
-  def addCategory = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def addCategory = 
+    SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val catResult = request.body.validate[Category]
     catResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(JsError.toJson(errors)))
       },
       cat => {
-        categoryDAO.create(cat.copy(uid=Some(request.identity.userID)))
-        Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' saved.") ))
+        val catWithId = cat.copy(uid=Some(request.identity.userID));
+        categoryDAO.create(catWithId).map(c => Created(Json.toJson(c)))
       }
     )
   }
@@ -56,15 +59,17 @@ class CategoryController @Inject() (
    * @param id 
    * @return HTTP response of a JSON string
    */
-  def updateCategory(id: Long) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def updateCategory(id: Long) = 
+    SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
     val catResult = request.body.validate[Category]
     catResult.fold(
       errors => {
-        BadRequest(Json.obj("status" -> "KO", "message" -> JsError.toJson(errors)))
+        Future.successful(BadRequest(JsError.toJson(errors)))
       },
       cat => {
-        categoryDAO.update(id, cat)
-        Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+cat+"' updated.") ))
+        val categoryWithId = cat.copy(uid=Some(request.identity.userID));
+        categoryDAO.create(categoryWithId).map(c => Ok(Json.toJson(c)))
       }
     )
   }
@@ -74,9 +79,7 @@ class CategoryController @Inject() (
    * @param id 
    * @return Ok response
    */
-  def deleteCategory(id: Long) = SecuredAction { implicit request =>
-    // TODO: if category does not exist
-    categoryDAO.delete(id)
-    Ok(Json.obj("status" -> "OK", "message" -> ("Category '"+id+"' deleted.") ))
+  def deleteCategory(id: Long) = SecuredAction.async { implicit request =>    
+    categoryDAO.delete(id).map(c => Ok(Json.obj("id" -> id)))
   }
 }
