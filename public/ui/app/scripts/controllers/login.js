@@ -19,7 +19,7 @@
       $auth.setStorageType($scope.rememberMe ? 'localStorage' : 'sessionStorage');
       $auth.login({ email: $scope.email, password: $scope.password, rememberMe: $scope.rememberMe })
         .then(function() {
-          toastr.success('You have successfully signed in');
+          toastr.success('You have signed in');
           $location.path('/');
         })
         .catch(function(response) {

@@ -21,6 +21,10 @@ class Application @Inject() (
     socialProviderRegistry: SocialProviderRegistry) 
   extends Silhouette[User, JWTAuthenticator] {
 
+  def index = Action {
+    Ok(views.html.index())
+  }
+
   /**
    * Returns the user.
    *
