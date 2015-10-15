@@ -33,20 +33,6 @@ function config($urlRouterProvider, $stateProvider, $httpProvider, $authProvider
         loginRequired: loginRequired 
       }
     })
-    .state('list', { 
-      url: '/list', 
-      templateUrl: '/views/list.html', 
-      resolve: {
-        loginRequired: loginRequired 
-      }
-    })
-    .state('board', { 
-      url: '/board/:bid',
-      templateUrl: '/views/board.html', 
-      resolve: {
-        loginRequired: loginRequired 
-      }
-    })
     .state('signup', { 
       url: '/signup', 
       templateUrl: '/views/signup.html',
@@ -65,6 +51,20 @@ function config($urlRouterProvider, $stateProvider, $httpProvider, $authProvider
       url: '/logout', 
       template: null, 
       controller: 'LogoutCtrl' 
+    })
+    .state('list', { 
+      url: '/list', 
+      templateUrl: '/app/partials/list.tpl.html', 
+      resolve: {
+        loginRequired: loginRequired 
+      }
+    })
+    .state('board', { 
+      url: '/board/:bid',
+      templateUrl: '/app/partials/board.tpl.html', 
+      resolve: {
+        loginRequired: loginRequired 
+      }
     });
 
   $urlRouterProvider.otherwise('/home');

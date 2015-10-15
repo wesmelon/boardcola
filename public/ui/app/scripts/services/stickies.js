@@ -12,6 +12,6 @@
    *  The difference from sticky is that this factory gets stickies by board id
    */
   function stickiesService($resource) {
-    return $resource('api/stickies/b/:bid');
+    return $resource('api/boards/:id/stickies');
   };
 })();

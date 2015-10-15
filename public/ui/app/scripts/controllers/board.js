@@ -33,7 +33,7 @@
     }
 
     function getStickies() {
-      stickiesService.query({bid: board_id}, function(data) {
+      stickiesService.query({id: board_id}, function(data) {
         vm.stickies = data;
       });
     }

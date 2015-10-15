@@ -359,6 +359,10 @@ ul {
   background-color: #7550ba;
 }
 
+[ng-mouseover] {
+  cursor: pointer;
+}
+
 /*********************
 * Animations
 *********************/
