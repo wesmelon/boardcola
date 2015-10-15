@@ -55,9 +55,11 @@ class StickyRepo @Inject() (boardDAO: BoardRepo,
   def findByBid(bid: Long): Future[Seq[Sticky]] = 
     db.run(stickies.filter(_.bid === bid).result)
 
-  def update(id: Long, sticky: Sticky): Future[Unit] = db.run { 
+  def update(id: Long, sticky: Sticky): Future[Sticky] = db.run { 
     val q = for { s <- stickies if s.id === id } yield s
-    q.update(sticky).map(_ => ())
+    q.update(sticky)
+
+    stickies.filter(_.id === id).result.head
   }
 
   def delete(id: Long): Future[Unit] = 

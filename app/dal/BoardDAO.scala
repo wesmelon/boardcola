@@ -57,9 +57,11 @@ class BoardRepo @Inject()
   def findByCid(cid: Long): Future[Seq[Board]] = 
     db.run(boards.filter(_.cid === cid).result)
 
-  def updateName(id: Long, name: String): Future[Unit] = db.run {
-    val q = for { b <- boards if b.id === id } yield b.name
-    q.update(name).map(_ => ())
+  def update(id: Long, board: Board): Future[Board] = db.run {
+    val q = for { b <- boards if b.id === id } yield b
+    q.update(board)
+
+    boards.filter(_.id === id).result.head
   }
 
   def delete(id: Long): Future[Unit] = 

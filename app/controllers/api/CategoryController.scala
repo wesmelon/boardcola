@@ -69,7 +69,7 @@ class CategoryController @Inject() (
       },
       cat => {
         val categoryWithId = cat.copy(uid=Some(request.identity.userID));
-        categoryDAO.create(categoryWithId).map(c => Ok(Json.toJson(c)))
+        categoryDAO.update(id, categoryWithId).map(c => Ok(Json.toJson(c)))
       }
     )
   }

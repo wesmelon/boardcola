@@ -89,7 +89,7 @@ class BoardController @Inject() (
       },
       board => {
         val boardWithId = board.copy(uid=Some(request.identity.userID));
-        boardDAO.create(boardWithId).map(b => Ok(Json.toJson(b)))
+        boardDAO.update(id, boardWithId).map(b => Ok(Json.toJson(b)))
       }
     )
   }

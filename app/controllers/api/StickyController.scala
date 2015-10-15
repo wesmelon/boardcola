@@ -76,7 +76,7 @@ class StickyController @Inject() (
         Future.successful(BadRequest(JsError.toJson(errors)))
       },
       sticky => {
-        stickyDAO.create(sticky).map(s => Ok(Json.toJson(s)))
+        stickyDAO.update(id, sticky).map(s => Ok(Json.toJson(s)))
       }
     )
   }
