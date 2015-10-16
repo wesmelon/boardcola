@@ -7,10 +7,6 @@
   <title>Boardcola</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
-  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-  <!-- build:css(.) styles/vendor.css -->
-  <!-- endbuild -->
-  <!-- build:css(.tmp) styles/main.css -->
   <link href="//fonts.googleapis.com/css?family=Roboto|Montserrat:400,700|Open+Sans:400,300,600" rel="stylesheet">
   <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="//code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
@@ -20,15 +16,9 @@
   <link href="src/styles/main.css" rel="stylesheet">
   <link href="src/styles/dragula.css" rel="stylesheet"/>
   <link href="src/styles/angular-toastr.css" rel="stylesheet"/>
-  <!-- endbuild -->
 </head>
 
 <body>
-<!--[if lte IE 8]>
-  <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-<![endif]-->
-
-<!-- Add your site or application content here -->
 <div class="header">
   
 <div ng-include="'views/navigation.html'"></div>
@@ -41,8 +31,6 @@
   </div>
 </div>
 
-<!-- build:js(.) scripts/vendor.js -->
-<!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
@@ -55,10 +43,7 @@
 <script src="bower_components/angular-toastr/dist/angular-toastr.tpls.js"></script>
 <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
 <script src="bower_components/satellizer/satellizer.js"></script>
-<!-- endbower -->
-<!-- endbuild -->
 
-<!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="src/app/app.js"></script>
 
 <script src="src/app/home/home.js"></script>
@@ -75,7 +60,6 @@
 <script src="src/common/resources/boards.js"></script>
 <script src="src/common/resources/sticky.js"></script>
 <script src="src/common/resources/stickies.js"></script>
-<!-- endbuild -->
 
 </body>
 </html>
