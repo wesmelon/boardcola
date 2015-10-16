@@ -35,5 +35,5 @@ GET       /auth/logout                      controllers.Application.signOut
 GET       /views/$template<.+>.html         controllers.Application.view(template)
 
 # Map static resources from the /public folder to the /assets URL path
-GET       /*file                            controllers.Assets.at(path="/public/ui", file)
+GET       /*file                            controllers.Assets.at(path="/public", file)
 

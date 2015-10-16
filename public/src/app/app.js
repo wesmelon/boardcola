@@ -54,14 +54,14 @@ function config($urlRouterProvider, $stateProvider, $httpProvider, $authProvider
     })
     .state('list', { 
       url: '/list', 
-      templateUrl: '/app/partials/list.tpl.html', 
+      templateUrl: '/src/app/list/list.tpl.html', 
       resolve: {
         loginRequired: loginRequired 
       }
     })
     .state('board', { 
       url: '/board/:bid',
-      templateUrl: '/app/partials/board.tpl.html', 
+      templateUrl: '/src/app/board/board.tpl.html', 
       resolve: {
         loginRequired: loginRequired 
       }
