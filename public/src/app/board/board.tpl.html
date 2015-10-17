@@ -1,7 +1,7 @@
 <div class="container">
-  <div class="row">
-    <div class="big-center-form panel">
-      <div class="panel-body" ng-controller="BoardCtrl as board">
+  <div class="big-center-form panel">
+    <div class="panel-body" ng-controller="BoardCtrl as board">
+      <div class="row">
         <div class="col-md-12">
           <h2>{{board.board.name}}</h2>
         </div>
@@ -11,10 +11,56 @@
             <input type="text" class="form-control" ng-model="board.content" name="text" placeholder="+ add new note" />
           </form>
         </div>
+      </div>
 
-        <div class="col-md-12">
-          <div ng-repeat="sticky in board.stickies" dragula='"bag-one"' dragula-scope='$parent'>
-            <div class="little-note">
+      <div class="row">
+        <hr class ="col-md-12">
+
+        <div class="col-md-3">
+          <div dragula='"bag-one"' dragula-scope='$parent'>
+            <div ng-repeat="sticky in board.stickies" class="little-note">
+              <div class="row">
+                <p class="col-md-4"><b>{{sticky.name}}</b></p>
+                <p class="col-md-8"><i>{{sticky.creation_time.time}}</i></p>
+              </div>
+              <div class="row">
+                <p class="col-md-10">{{sticky.content}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div dragula='"bag-one"' dragula-scope='$parent'>
+            <div ng-repeat="sticky in board.stickies" class="little-note">
+              <div class="row">
+                <p class="col-md-4"><b>{{sticky.name}}</b></p>
+                <p class="col-md-8"><i>{{sticky.creation_time.time}}</i></p>
+              </div>
+              <div class="row">
+                <p class="col-md-10">{{sticky.content}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div dragula='"bag-one"' dragula-scope='$parent'>
+            <div ng-repeat="sticky in board.stickies" class="little-note">
+              <div class="row">
+                <p class="col-md-4"><b>{{sticky.name}}</b></p>
+                <p class="col-md-8"><i>{{sticky.creation_time.time}}</i></p>
+              </div>
+              <div class="row">
+                <p class="col-md-10">{{sticky.content}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div dragula='"bag-one"' dragula-scope='$parent'>
+            <div ng-repeat="sticky in board.stickies" class="little-note">
               <div class="row">
                 <p class="col-md-4"><b>{{sticky.name}}</b></p>
                 <p class="col-md-8"><i>{{sticky.creation_time.time}}</i></p>

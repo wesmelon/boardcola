@@ -69,6 +69,7 @@ ul {
 }
 
 .panel {
+  background-color: #F8F8F8;
   border-color: #cfd9D7;
   border-radius: 2px;
   box-shadow: 0 8px 17px rgba(0, 0, 0, .2);
@@ -88,11 +89,13 @@ ul {
 }
 
 .little-note {
-  border-style: dotted;
+  background-color: #fff;
+  border-style: solid;
+  border-color: #D8D8D8;
   border-width: 1px;
   width: 200px;
   height: 100px;
-  margin: 1% auto;
+  margin: 3% auto;
 }
 
 .center-form {
