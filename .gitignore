@@ -1,5 +1,6 @@
 logs
 target
+.DS_Store
 /.idea
 /.idea_modules
 /.classpath
@@ -7,6 +8,4 @@ target
 /.settings
 /RUNNING_PID
 
-# Don't push application.conf #
 activator*
-conf/application.conf
