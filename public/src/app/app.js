@@ -15,9 +15,9 @@ angular
     'ngAnimate', 
     'ngCookies', 
     'ui.router', 
-    angularDragula(angular),
     'satellizer', 
-    'toastr'
+    'toastr',
+    angularDragula(angular)
   ]);
 
 angular

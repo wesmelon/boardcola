@@ -88,6 +88,14 @@ ul {
   border-radius: 0;
 }
 
+.note-container {
+  width: 25%;
+  min-height: 500px;
+  padding-right: 15px;
+  padding-left: 15px;
+  float: left;
+}
+
 .little-note {
   background-color: #fff;
   border-style: solid;
