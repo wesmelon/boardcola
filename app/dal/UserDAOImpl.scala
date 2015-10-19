@@ -55,7 +55,6 @@ class UserDAOImpl @Inject()(userInfoDAO: UserRepo)  extends UserDAO {
 class UserRepo @Inject() (dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext) {
   private val dbConfig = dbConfigProvider.get[JdbcProfile]
 
-  // Brings db into scope
   import dbConfig._
   import driver.api._
 
