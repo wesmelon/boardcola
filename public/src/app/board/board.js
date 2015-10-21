@@ -3,7 +3,8 @@
 
   angular
     .module('boardcola')
-    .controller('BoardCtrl', BoardCtrl);
+    .controller('BoardCtrl', BoardCtrl)
+    .directive('boardcolaSticky', StickyDir);
 
   BoardCtrl.$inject = ['$stateParams', 'boardsServices', 'stickyService', 'stickiesService'];
 
@@ -50,4 +51,11 @@
       });
     };
   };
+
+  function StickyDir() {
+     return {
+      restrict: 'A',
+      templateUrl: '/src/app/board/sticky.tpl.html'
+    }
+  }
 })();

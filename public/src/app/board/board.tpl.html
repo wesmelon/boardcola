@@ -16,13 +16,7 @@
 
         <div class="note-container" dragula='bag' dragula-scope='$parent'>
           <div ng-repeat="sticky in board.stickies" class="little-note">
-            <div class="row">
-              <p class="col-md-4"><b>{{sticky.name}}</b></p>
-              <p class="col-md-8"><i>{{sticky.creation_time.time}}</i></p>
-            </div>
-            <div class="row">
-              <p class="col-md-10">{{sticky.content}}</p>
-            </div>
+            <div boardcola-sticky></div>
           </div>
         </div>
 
