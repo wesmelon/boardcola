@@ -1,0 +1,28 @@
+[ng-mouseover] {
+  cursor: pointer;
+}
+
+.note-container {
+  width: 25%;
+  min-height: 500px;
+  padding-right: 15px;
+  padding-left: 15px;
+  float: left;
+}
+
+.little-note {
+  background-color: #fff;
+  border-style: solid;
+  border-color: #D8D8D8;
+  border-width: 1px;
+  width: 200px;
+  height: 100px;
+  margin: 3% auto;
+}
+
+.edit-in-place.active input {
+  padding: 10px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
+  transition: border 0.3s;
+}

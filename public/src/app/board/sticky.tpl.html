@@ -2,6 +2,6 @@
   <p class="col-md-4"><b>{{sticky.name}}</b></p>
   <p class="col-md-8"><i>{{sticky.creation_time.time}}</i></p>
 </div>
-<div class="row">
-  <p class="col-md-10">{{sticky.content}}</p>
+<div class="row" ng-dblclick="editContent()">
+  <span class="col-md-10" ng-hide="editing" ng-bind="sticky.content"></span><input ng-blur="leaveInput()" ng-show="editing" ng-model="sticky.content"></input>
 </div>
