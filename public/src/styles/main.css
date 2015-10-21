@@ -88,24 +88,6 @@ ul {
   border-radius: 0;
 }
 
-.note-container {
-  width: 25%;
-  min-height: 500px;
-  padding-right: 15px;
-  padding-left: 15px;
-  float: left;
-}
-
-.little-note {
-  background-color: #fff;
-  border-style: solid;
-  border-color: #D8D8D8;
-  border-width: 1px;
-  width: 200px;
-  height: 100px;
-  margin: 3% auto;
-}
-
 .center-form {
   width: 330px;
   margin: 12% auto;
@@ -370,9 +352,6 @@ ul {
   background-color: #7550ba;
 }
 
-[ng-mouseover] {
-  cursor: pointer;
-}
 
 /*********************
 * Animations

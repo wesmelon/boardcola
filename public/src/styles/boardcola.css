@@ -5,23 +5,33 @@
 .note-container {
   width: 25%;
   min-height: 500px;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding: 20px;
   float: left;
 }
 
+.note {
+  padding: 5px 10px;
+}
+
+.note.footer {
+  float: right;
+  color: #8C3644;
+  font-style: italic;
+}
+
 .little-note {
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
   background-color: #fff;
-  border-style: solid;
-  border-color: #D8D8D8;
-  border-width: 1px;
+  border: none;
+  border-bottom: solid 2px #c9c9c9;
   width: 200px;
-  height: 100px;
-  margin: 3% auto;
+  height: 200px;
 }
 
 .edit-in-place.active input {
-  padding: 10px;
   border: none;
   border-bottom: solid 2px #c9c9c9;
   transition: border 0.3s;
