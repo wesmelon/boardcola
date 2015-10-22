@@ -2,7 +2,8 @@
   <b><span ng-bind="sticky.name"></span></b>
 </div>
 <div name="content" class="note body" ng-click="editContent()">
-  <span ng-hide="editing" ng-bind="sticky.content"></span><input ng-blur="leaveInput()" ng-show="editing" ng-model="sticky.content"></input>
+  <span ng-hide="editing" ng-bind="sticky.content"></span>
+  <input ng-blur="leaveInput()" ng-show="editing" ng-model="sticky.content"></input>
 </div>
 <hr />
 <div name="footer" class="note footer">

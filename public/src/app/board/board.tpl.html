@@ -7,7 +7,7 @@
         </div>
         
         <div class="col-md-12">
-          <div add-sticky-form></div>
+          <div sticky-form add-sticky="board.addSticky()" content="board.content"></div>
         </div>
       </div>
 
@@ -16,7 +16,7 @@
 
         <div class="note-container" dragula='bag' dragula-scope='$parent'>
           <div ng-repeat="sticky in board.stickies" class="little-note">
-            <div boardcola-sticky sticky="sticky" save-sticky="board.saveSticky(sticky)"></div>
+           <div boardcola-sticky sticky="sticky" save-sticky="board.saveSticky(sticky)"></div>
           </div>
         </div>
 
