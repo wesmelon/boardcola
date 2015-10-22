@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('resources.category', [])
     .factory('categoryServices', categoryServices);
 
   categoryServices.$inject = ['$resource'];

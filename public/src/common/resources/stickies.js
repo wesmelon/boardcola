@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('resources.stickies', [])
     .factory('stickiesService', stickiesService);
 
   stickiesService.$inject = ['$resource'];

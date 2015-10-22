@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('security.logout', ['toastr'])
     .controller('LogoutCtrl', LogoutCtrl);
 
   LogoutCtrl.$inject = ['$auth', '$location', 'toastr'];

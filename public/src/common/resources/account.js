@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('resources.account', [])
     .factory('account', account);
 
   account.$inject = ['$http'];

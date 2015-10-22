@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('boardcola.list', ['resources.boards', 'resources.category'])
     .controller('ListCtrl', ListCtrl);
 
   ListCtrl.$inject = ['account', 'boardsServices', 'categoryServices'];

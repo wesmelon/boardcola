@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('boardcola.home', ['resources.account'])
     .controller('HomeCtrl', HomeCtrl);
 
   HomeCtrl.$inject = ['$rootScope', '$scope', 'account'];

@@ -17,7 +17,14 @@ angular
     'ui.router', 
     'satellizer', 
     'toastr',
-    angularDragula(angular)
+    angularDragula(angular),
+    'security.login',
+    'security.navigation',
+    'boardcola.home',
+    'boardcola.list',
+    'boardcola.board',
+    'boardcola.board.sticky',
+    'boardcola.board.plus.sticky'
   ]);
 
 angular

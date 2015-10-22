@@ -2,9 +2,8 @@
   'use strict';
 
   angular
-    .module('boardcola')
-    .controller('BoardCtrl', BoardCtrl)
-    .directive('boardcolaSticky', StickyDir);
+    .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies'])
+    .controller('BoardCtrl', BoardCtrl);
 
   BoardCtrl.$inject = ['$stateParams', 'boardsServices', 'stickyService', 'stickiesService'];
 
@@ -18,6 +17,7 @@
     vm.board = [];
     vm.stickies = [];
     vm.addSticky = addSticky;
+    vm.saveSticky = saveSticky;
     vm.content = '';
 
     activate();
@@ -50,30 +50,9 @@
         getStickies();
       });
     };
+
+    function saveSticky(sticky) {
+      stickyService.update({ id: sticky.id }, sticky);
+    };
   };
-
-  function StickyDir() {
-     return {
-      restrict: 'AE',
-      templateUrl: '/src/app/board/sticky.tpl.html',
-      link: function($scope, element, attrs) {
-        var inputElement = angular.element(element.children()[1]);
-
-        element.addClass('edit-in-place');
-
-        $scope.editing = false;
-
-        $scope.editContent = function() {
-          $scope.editing = true;
-          element.addClass('active');
-          inputElement[0].focus();
-        };
-
-        $scope.leaveInput = function() {
-          $scope.editing = false;
-          element.removeClass('active');
-        }
-      }
-    }
-  }
 })();

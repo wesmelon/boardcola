@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('security.navigation', [])
     .controller('NavigationCtrl', NavigationCtrl);
 
   NavigationCtrl.$inject = ['$scope', '$auth'];

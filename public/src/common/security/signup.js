@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('security.signup', ['toastr'])
     .controller('SignUpCtrl', SignUpCtrl);
 
   SignUpCtrl.$inject = ['$scope', '$auth', '$location', 'toastr'];

@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola')
+    .module('boardcola.board.plus.sticky', [])
     .directive('addStickyForm', addStickyForm);
 
   function addStickyForm() {
