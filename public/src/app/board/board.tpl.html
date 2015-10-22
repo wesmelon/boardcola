@@ -16,7 +16,7 @@
 
         <div class="note-container" dragula='bag' dragula-scope='$parent'>
           <div ng-repeat="sticky in board.stickies" class="little-note">
-            <div boardcola-sticky></div>
+            <div boardcola-sticky sticky="sticky" save-sticky="board.saveSticky(sticky)"></div>
           </div>
         </div>
 

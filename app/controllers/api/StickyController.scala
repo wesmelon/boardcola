@@ -29,9 +29,7 @@ class StickyController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getStickies(bid: Long) = SecuredAction.async { implicit request =>
-    val f = stickyDAO.findByBid(bid)
-
-    f.map(s => Ok(Json.toJson(s)))
+    stickyDAO.findByBid(bid).map(s => Ok(Json.toJson(s)))
   }
 
   /**
@@ -39,9 +37,7 @@ class StickyController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getSticky(id: Long) = SecuredAction.async { implicit request =>
-    val f = stickyDAO.findById(id)
-
-    f.map(s => Ok(Json.toJson(s)))
+    stickyDAO.findById(id).map(s => Ok(Json.toJson(s)))
   }
 
   /**
@@ -76,7 +72,8 @@ class StickyController @Inject() (
         Future.successful(BadRequest(JsError.toJson(errors)))
       },
       sticky => {
-        stickyDAO.update(id, sticky).map(s => Ok(Json.toJson(s)))
+        stickyDAO.update(id, sticky)
+        stickyDAO.findById(id).map(s => Ok(Json.toJson(s))) // hack
       }
     )
   }

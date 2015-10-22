@@ -30,9 +30,7 @@ class BoardController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getBoards = SecuredAction.async { implicit request =>
-    val f = boardDAO.findByUid(request.identity.userID)
-
-    f.map(s => Ok(Json.toJson(s)))
+    boardDAO.findByUid(request.identity.userID).map(s => Ok(Json.toJson(s)))
   }
 
   /**
@@ -40,9 +38,7 @@ class BoardController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getBoardsByCat(cid: Long) = SecuredAction.async { implicit request =>
-    val f = boardDAO.findByCid(cid)
-
-    f.map(s => Ok(Json.toJson(s)))
+    boardDAO.findByCid(cid).map(s => Ok(Json.toJson(s)))
   }
 
   /**
@@ -50,9 +46,7 @@ class BoardController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getBoard(id: Long) = SecuredAction.async { implicit request =>
-    val f = boardDAO.findById(id)
-
-    f.map(s => Ok(Json.toJson(s)))
+    boardDAO.findById(id).map(s => Ok(Json.toJson(s)))
   }
 
   /**
@@ -89,7 +83,8 @@ class BoardController @Inject() (
       },
       board => {
         val boardWithId = board.copy(uid=Some(request.identity.userID));
-        boardDAO.update(id, boardWithId).map(b => Ok(Json.toJson(b)))
+        boardDAO.update(id, boardWithId)
+        boardDAO.findById(id).map(s => Ok(Json.toJson(s))) // hack
       }
     )
   }

@@ -42,11 +42,9 @@ class CategoryRepo @Inject()
   def findByUid(uid: UUID): Future[Seq[Category]] = 
     db.run(categories.filter(_.uid === uid).result)
 
-  def update(id: Long, cat: Category): Future[Category] = db.run {
+  def update(id: Long, cat: Category): Future[Unit] = db.run {
     val q = for { c <- categories if c.id === id } yield c
-    q.update(cat)
-
-    categories.filter(_.id === id).result.head
+    q.update(cat).map(_ => ())
   }
 
   def delete(id: Long): Future[Unit] = 

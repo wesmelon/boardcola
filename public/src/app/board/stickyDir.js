@@ -8,22 +8,28 @@
     function StickyDir() {
       return {
         restrict: 'AE',
+        scope: {
+          sticky: '=sticky',
+          save: '&saveSticky'
+        },
         templateUrl: '/src/app/board/sticky.tpl.html',
-        link: function($scope, element, attrs) {
+        link: function(scope, element, attrs) {
+
           var inputElement = angular.element(element.children()[1]);
 
           element.addClass('edit-in-place');
 
-          $scope.editing = false;
+          scope.editing = false;
 
-          $scope.editContent = function() {
-            $scope.editing = true;
+          scope.editContent = function() {
+            scope.editing = true;
             element.addClass('active');
             inputElement[0].focus();
           };
 
-          $scope.leaveInput = function() {
-            $scope.editing = false;
+          scope.leaveInput = function() {
+            scope.save(scope.sticky);
+            scope.editing = false;
             element.removeClass('active');
           }
         }

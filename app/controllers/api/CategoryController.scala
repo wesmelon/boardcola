@@ -30,9 +30,7 @@ class CategoryController @Inject() (
    * @return HTTP response of a JSON string
    */
   def getCategories = SecuredAction.async { implicit request =>
-    val f = categoryDAO.findByUid(request.identity.userID)
-
-    f.map(s => Ok(Json.toJson(s)))
+    categoryDAO.findByUid(request.identity.userID).map(s => Ok(Json.toJson(s)))
   }
 
   /**
@@ -69,7 +67,8 @@ class CategoryController @Inject() (
       },
       cat => {
         val categoryWithId = cat.copy(uid=Some(request.identity.userID));
-        categoryDAO.update(id, categoryWithId).map(c => Ok(Json.toJson(c)))
+        categoryDAO.update(id, categoryWithId)
+        categoryDAO.findById(id).map(s => Ok(Json.toJson(s))) // hack
       }
     )
   }
