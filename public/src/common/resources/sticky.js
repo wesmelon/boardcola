@@ -12,7 +12,8 @@
    */
   function stickyService($resource) {
     return $resource('api/stickies/:id', null, {
-      'update': { method: 'PUT' }
+      'update': { method: 'PUT' },
+      'remove': { method: 'DELETE' }
     });
   };
 })();

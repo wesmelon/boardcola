@@ -18,6 +18,7 @@
     vm.stickies = [];
     vm.addSticky = addSticky;
     vm.saveSticky = saveSticky;
+    vm.removeSticky = removeSticky;
     vm.content = '';
 
     activate();
@@ -54,5 +55,11 @@
     function saveSticky(sticky) {
       stickyService.update({ id: sticky.id }, sticky);
     };
+
+    function removeSticky(sticky) {
+      stickyService.remove({ id: sticky.id }, function() {
+        getStickies();
+      });
+    }
   };
 })();

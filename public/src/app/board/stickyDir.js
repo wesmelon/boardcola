@@ -5,15 +5,23 @@
     .module('boardcola.board.sticky', [])
     .directive('boardcolaSticky', StickyDir);
 
-    function StickyDir() {
+    StickyDir.$inject = ['$parse']
+
+    function StickyDir($parse) {
       return {
         restrict: 'AE',
         scope: {
           sticky: '=sticky',
-          save: '&saveSticky'
+          save: '&saveSticky',
+          remove: '&removeSticky'
         },
         templateUrl: '/src/app/board/sticky.tpl.html',
         link: function(scope, element, attrs) {
+          var fn = $parse(attrs.ngRightClick);
+          element.bind('contextmenu', function(event) {
+            scope.remove(scope.sticky);
+            event.preventDefault();
+          });
 
           var inputElement = angular.element(element.children()[1]);
 
