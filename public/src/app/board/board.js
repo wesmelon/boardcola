@@ -2,15 +2,15 @@
   'use strict';
 
   angular
-    .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies'])
+    .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies', 'toastr'])
     .controller('BoardCtrl', BoardCtrl);
 
-  BoardCtrl.$inject = ['$stateParams', 'boardsServices', 'stickyService', 'stickiesService'];
+  BoardCtrl.$inject = ['$stateParams', 'Boards', 'Sticky', 'Stickies', 'toastr'];
 
   /**
    * The board controller.
    */
-  function BoardCtrl($stateParams, boardsServices, stickyService, stickiesService) {
+  function BoardCtrl($stateParams, Boards, Sticky, Stickies, toastr) {
     var vm = this;
     var board_id = $stateParams.bid;
 
@@ -29,19 +29,19 @@
     }
 
     function getBoard() {
-      boardsServices.get({id: board_id}, function(data) {
+      Boards.get({id: board_id}, function(data) {
         vm.board = data;
       });
     }
 
     function getStickies() {
-      stickiesService.query({id: board_id}, function(data) {
+      Stickies.query({id: board_id}, function(data) {
         vm.stickies = data;
       });
     }
 
     function addSticky() {
-      var newSticky = new stickyService({
+      var newSticky = new Sticky({
         bid: parseInt(board_id), 
         content: vm.content
       });
@@ -53,12 +53,13 @@
     };
 
     function saveSticky(sticky) {
-      stickyService.update({ id: sticky.id }, sticky);
+      Sticky.update({ id: sticky.id }, sticky);
     };
 
     function removeSticky(sticky) {
-      stickyService.remove({ id: sticky.id }, function() {
+      Sticky.remove({ id: sticky.id }, function() {
         getStickies();
+        toastr.success('You have deleted sticky ' + sticky.id + '.');
       });
     }
   };

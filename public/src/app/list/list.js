@@ -2,15 +2,15 @@
   'use strict';
 
   angular
-    .module('boardcola.list', ['resources.boards', 'resources.category'])
+    .module('boardcola.list', ['resources.boards', 'resources.categories'])
     .controller('ListCtrl', ListCtrl);
 
-  ListCtrl.$inject = ['account', 'boardsServices', 'categoryServices'];
+  ListCtrl.$inject = ['account', 'Boards', 'Categories'];
 
   /**
    * The list controller.
    */
-  function ListCtrl(account, boardsServices, categoryServices) {
+  function ListCtrl(account, Boards, Categories) {
     var vm = this;
     vm.categories = [];
     vm.boards = [];
@@ -36,13 +36,13 @@
     }
 
     function getCategories() {
-      categoryServices.query(function(data) {
+      Categories.query(function(data) {
         vm.categories = data;
       });
     }
 
     function addCategory() {
-      var newCat = new categoryServices({
+      var newCat = new Categories({
         name: vm.catName
       });
 
@@ -54,13 +54,13 @@
     }
 
     function getBoards() {
-      boardsServices.query(function(data) {
+      Boards.query(function(data) {
         vm.boards = data;
       });
     }
 
     function addBoard() {
-      var newBoard = new boardsServices({
+      var newBoard = new Boards({
         name: vm.name
       });
 

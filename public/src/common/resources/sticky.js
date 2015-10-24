@@ -3,14 +3,14 @@
 
   angular
     .module('resources.sticky', [])
-    .factory('stickyService', stickyService);
+    .factory('Sticky', Sticky);
 
-  stickyService.$inject = ['$resource'];
+  Sticky.$inject = ['$resource'];
 
   /**
    * The sticky factory.
    */
-  function stickyService($resource) {
+  function Sticky($resource) {
     return $resource('api/stickies/:id', null, {
       'update': { method: 'PUT' },
       'remove': { method: 'DELETE' }
