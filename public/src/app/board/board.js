@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies', 'toastr', 'resources.custom'])
+    .module('boardcola.board', ['resources.boards', 'resources.stickies', 'toastr'])
     .controller('BoardCtrl', BoardCtrl);
 
   BoardCtrl.$inject = ['$stateParams', 'Boards', 'Stickies', 'toastr'];
