@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies', 'toastr'])
+    .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies', 'toastr', 'resources.custom'])
     .controller('BoardCtrl', BoardCtrl);
 
   BoardCtrl.$inject = ['$stateParams', 'Boards', 'Stickies', 'toastr'];
@@ -35,9 +35,7 @@
     }
 
     function getStickies() {
-      Stickies.query({bid: vm.bid}, function(data) {
-        vm.stickies = data;
-      });
+      Stickies.query({bid: vm.bid}, setData);
     }
 
     function addSticky() {
@@ -47,15 +45,19 @@
       });
       vm.content = '';
       
-      newSticky.$save({bid: vm.bid}, onSuccess, onFailure);
+      newSticky.$save(onSuccess, onFailure);
     };
 
     function updateSticky(sticky) {
-      Stickies.update({ bid: vm.bid, id: sticky.id }, sticky);
+      sticky.$save(onSuccess, onFailure);
     };
 
     function removeSticky(sticky) {
-      sticky.$remove({ bid: vm.bid, id: sticky.id }, onSuccess, onFailure);
+      sticky.$remove(onSuccess, onFailure);
+    }
+
+    function setData(stickies) {
+      vm.stickies = stickies;
     }
 
     function onSuccess() {

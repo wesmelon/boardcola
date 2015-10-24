@@ -2,17 +2,17 @@
   'use strict';
 
   angular
-    .module('resources.stickies', [])
+    .module('resources.stickies', ['resources.custom'])
     .factory('Stickies', Stickies);
 
-  Stickies.$inject = ['$resource'];
+  Stickies.$inject = ['Resource'];
 
   /**
    * The sticky factory.
    */
   function Stickies($resource) {
-    return $resource('api/boards/:bid/stickies/:id', { bid: '@bid', id: '@id' } , {
-      'update': { method: 'PUT' }
-    });
+    return $resource('api/boards/:bid/stickies/:id', 
+      { bid: '@bid', id: '@id' }
+    );
   };
 })();
