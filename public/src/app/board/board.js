@@ -5,19 +5,19 @@
     .module('boardcola.board', ['resources.boards', 'resources.sticky', 'resources.stickies', 'toastr'])
     .controller('BoardCtrl', BoardCtrl);
 
-  BoardCtrl.$inject = ['$stateParams', 'Boards', 'Sticky', 'Stickies', 'toastr'];
+  BoardCtrl.$inject = ['$stateParams', 'Boards', 'Stickies', 'toastr'];
 
   /**
    * The board controller.
    */
-  function BoardCtrl($stateParams, Boards, Sticky, Stickies, toastr) {
+  function BoardCtrl($stateParams, Boards, Stickies, toastr) {
     var vm = this;
-    var board_id = $stateParams.bid;
+    vm.bid = parseInt($stateParams.bid);
 
     vm.board = [];
     vm.stickies = [];
     vm.addSticky = addSticky;
-    vm.saveSticky = saveSticky;
+    vm.updateSticky = updateSticky;
     vm.removeSticky = removeSticky;
     vm.content = '';
 
@@ -29,38 +29,41 @@
     }
 
     function getBoard() {
-      Boards.get({id: board_id}, function(data) {
+      Boards.get({id: vm.bid}, function(data) {
         vm.board = data;
       });
     }
 
     function getStickies() {
-      Stickies.query({id: board_id}, function(data) {
+      Stickies.query({bid: vm.bid}, function(data) {
         vm.stickies = data;
       });
     }
 
     function addSticky() {
-      var newSticky = new Sticky({
-        bid: parseInt(board_id), 
+      var newSticky = new Stickies({
+        bid: vm.bid, 
         content: vm.content
       });
       vm.content = '';
       
-      newSticky.$save(function() {
-        getStickies();
-      });
+      newSticky.$save({bid: vm.bid}, onSuccess, onFailure);
     };
 
-    function saveSticky(sticky) {
-      Sticky.update({ id: sticky.id }, sticky);
+    function updateSticky(sticky) {
+      Stickies.update({ bid: vm.bid, id: sticky.id }, sticky);
     };
 
     function removeSticky(sticky) {
-      Sticky.remove({ id: sticky.id }, function() {
-        getStickies();
-        toastr.success('You have deleted sticky ' + sticky.id + '.');
-      });
+      sticky.$remove({ bid: vm.bid, id: sticky.id }, onSuccess, onFailure);
+    }
+
+    function onSuccess() {
+      getStickies();
+    }
+
+    function onFailure(data) {
+      toastr.error("There was an error: " + data);
     }
   };
 })();

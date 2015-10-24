@@ -37,29 +37,29 @@ class StickyRepo @Inject() (boardDAO: BoardRepo,
 
   private val stickies = TableQuery[Stickies]
 
-  def create(sticky: Sticky): Future[Sticky] = db.run {
+  def create(bid: Long, sticky: Sticky): Future[Sticky] = db.run {
     val timestamp = Instant.now()
     val created = new Timestamp(timestamp.toEpochMilli())
     val stickyWithTime = sticky.copy(creationTime=Some(created))
 
     (stickies returning stickies.map(_.id) 
-      into ((sticky, id) => sticky.copy(id=Some(id)))
+      into ((sticky, id) => sticky.copy(bid=bid, id=Some(id)))
     ) += stickyWithTime
   }
 
   def findAll: Future[Seq[Sticky]] = db.run(stickies.result)
 
-  def findById(id: Long): Future[Sticky] = 
-    db.run(stickies.filter(_.id === id).result.head)
-
   def findByBid(bid: Long): Future[Seq[Sticky]] = 
     db.run(stickies.filter(_.bid === bid).result)
 
-  def update(id: Long, sticky: Sticky): Future[Unit] = db.run { 
-    val q = for { s <- stickies if s.id === id } yield s
+  def findById(bid: Long, id: Long): Future[Sticky] = 
+    db.run(stickies.filter(s => s.id === id && s.bid === bid).result.head)
+
+  def update(bid: Long, id: Long, sticky: Sticky): Future[Unit] = db.run { 
+    val q = for { s <- stickies if (s.id === id && s.bid === bid) } yield s
     q.update(sticky).map(_ => ())
   }
 
-  def delete(id: Long): Future[Unit] = 
-    db.run(stickies.filter(_.id === id).delete.map(_ => ()))
+  def delete(bid: Long, id: Long): Future[Unit] = 
+    db.run(stickies.filter(s => s.id === id && s.bid === bid).delete.map(_ => ()))
 }

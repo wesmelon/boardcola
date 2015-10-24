@@ -8,10 +8,11 @@
   Stickies.$inject = ['$resource'];
 
   /**
-   * The stickies factory.
-   *  The difference from sticky is that this factory gets stickies by board id
+   * The sticky factory.
    */
   function Stickies($resource) {
-    return $resource('api/boards/:id/stickies');
+    return $resource('api/boards/:bid/stickies/:id', { bid: '@bid', id: '@id' } , {
+      'update': { method: 'PUT' }
+    });
   };
 })();

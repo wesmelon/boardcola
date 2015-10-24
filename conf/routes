@@ -19,12 +19,12 @@ GET       /api/boards/:id                   controllers.api.BoardController.getB
 POST      /api/boards                       controllers.api.BoardController.addBoard
 PUT       /api/boards/:id                   controllers.api.BoardController.updateBoard(id: Long)
 DELETE    /api/boards/:id                   controllers.api.BoardController.deleteBoard(id: Long)
-GET       /api/boards/:id/stickies          controllers.api.StickyController.getStickies(id: Long)
 
-GET       /api/stickies/:id                 controllers.api.StickyController.getSticky(id: Long)
-POST      /api/stickies                     controllers.api.StickyController.addSticky
-PUT       /api/stickies/:id                 controllers.api.StickyController.updateSticky(id: Long)
-DELETE    /api/stickies/:id                 controllers.api.StickyController.deleteSticky(id: Long)
+GET       /api/boards/:bid/stickies          controllers.api.StickyController.getStickies(bid: Long)
+GET       /api/boards/:bid/stickies/:id      controllers.api.StickyController.getSticky(bid: Long, id: Long)
+POST      /api/boards/:bid/stickies          controllers.api.StickyController.addSticky(bid: Long)
+PUT       /api/boards/:bid/stickies/:id      controllers.api.StickyController.updateSticky(bid: Long, id: Long)
+DELETE    /api/boards/:bid/stickies/:id      controllers.api.StickyController.deleteSticky(bid: Long, id: Long)
 
 # Authentication
 POST      /auth/signup                      controllers.auth.SignUp.signUp
